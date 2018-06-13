@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">YouTube Lite</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="search_hint">Search</string>
+
+    <string name="nav_home">Home</string>
+    <string name="nav_tools">Tools</string>
+    <string name="activity_video_tab_description">Description</string>
+    <string name="activity_video_tab_videos">Videos</string>
+    <string name="activity_video_tab_comments">Comments</string>
+    <string name="positive_button">OK</string>
+    <string name="negative_button">Cancel</string>
+    <string name="service_missing">You need YouTube App to watch this content. Do you want to download it.</string>
+    <string name="service_disabled">YouTube App is disabled. Please enabled it.</string>
+    <string name="service_version_update_required">YouTube App is out of date. Please update it.</string>
+    <string name="divider">divider</string>
+    <string name="exit_button">X</string>
+    <string name="add_a_reply">Add a reply</string>
+    <string name="button_dislike">Dislike</string>
+    <string name="button_like">Like</string>
+    <string name="add_a_comment">Add a\ncomment</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="load_more">Load More</string>
+    <string name="refresh">Refresh</string>
+    <string name="unauthorized">Unauthorized</string>
+    <string name="removed_rating">You removed your rating</string>
+    <string name="liked_video">You liked this video</string>
+    <string name="disliked_video">You disliked this video</string>
+    <string name="sign_in_drawer">Sign In</string>
+    <string name="sign_out_menu_title">Sign Out</string>
+    <string name="sign_out_menu_message">Are you sure you want to Sign Out?</string>
+</resources>

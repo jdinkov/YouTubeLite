@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.wordpress.dnvsoft.youtubelite.VideoFragmentCommentReplies">
+
+    <Button
+        android:id="@+id/buttonAddReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_a_reply" />
+
+    <Button
+        android:id="@+id/buttonExit"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/exit_button"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/buttonAddReply"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:contentDescription="@string/divider"
+        android:src="@color/colorAccent" />
+
+    <ListView
+        android:id="@+id/listViewCommentReplies"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/imageView"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent" />
+
+</RelativeLayout>
