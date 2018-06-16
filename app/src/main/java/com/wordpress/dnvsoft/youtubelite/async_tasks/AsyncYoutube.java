@@ -68,7 +68,7 @@ abstract class AsyncYoutube extends AsyncTask<Void, String, YouTubeResult> {
                 .build();
     }
 
-    private static Context getAppContext() {
+    static Context getAppContext() {
         return context.get();
     }
 

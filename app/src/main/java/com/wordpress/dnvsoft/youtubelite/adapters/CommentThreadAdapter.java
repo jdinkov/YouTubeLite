@@ -17,11 +17,11 @@ import com.wordpress.dnvsoft.youtubelite.models.YouTubeCommentThread;
 
 import java.util.ArrayList;
 
-public class CommentThreadAdapter extends CommentAdapter {
+public class CommentThreadAdapter extends CommentAdapter<YouTubeCommentThread> {
 
     private String videoId;
 
-    public CommentThreadAdapter(@NonNull Context context, int layout, ArrayList objects, String videoId,
+    public CommentThreadAdapter(@NonNull Context context, int layout, ArrayList<YouTubeCommentThread> objects, String videoId,
                                 OnCommentAddEditListener listener) {
         super(context, layout, objects, false, listener);
         this.videoId = videoId;

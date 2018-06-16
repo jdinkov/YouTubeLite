@@ -27,7 +27,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
-import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetChannelId;
+import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetChannelInfo;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
@@ -222,8 +222,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private AsyncGetChannelId getChannelId() {
-        return new AsyncGetChannelId(MainActivity.this,
+    private AsyncGetChannelInfo getChannelId() {
+        return new AsyncGetChannelInfo(MainActivity.this, null,
                 new TaskCompleted() {
                     @Override
                     public void onTaskComplete(YouTubeResult result) {

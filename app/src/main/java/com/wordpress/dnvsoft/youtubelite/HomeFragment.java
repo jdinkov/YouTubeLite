@@ -26,9 +26,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.wordpress.dnvsoft.youtubelite.adapters.YouTubeItemAdapter;
+import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetHomeScreenItems;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetItems;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.menus.SortMenu;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeChannel;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 public class HomeFragment extends Fragment {
 
     private boolean hasChanged;
+    private boolean hasChangedAtAll;
     private String searchParameter = "";
     private EditText editText;
     private ArrayList<YouTubeItem> youTubeItems = new ArrayList<>();
@@ -45,6 +48,8 @@ public class HomeFragment extends Fragment {
     private LinearLayout footer;
     private ProgressBar progressBar;
     private YouTubeItemAdapter<YouTubeItem> youTubeItemAdapter;
+
+    private enum TaskStatus {FINISHED, RUNNING}
 
     public HomeFragment() {
     }
@@ -75,9 +80,7 @@ public class HomeFragment extends Fragment {
         editText.setOnFocusChangeListener(onFocusChangeListener);
         editText.addTextChangedListener(textWatcher);
 
-        GetYouTubeItems("title");
-
-        setHasOptionsMenu(true);
+        GetHomeScreenVideos();
 
         return view;
     }
@@ -85,7 +88,11 @@ public class HomeFragment extends Fragment {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            GetYouTubeItems(getOrderFromPreferences());
+            if (hasChangedAtAll) {
+                GetYouTubeItems(getOrderFromPreferences());
+            } else {
+                GetHomeScreenVideos();
+            }
         }
     };
 
@@ -96,6 +103,11 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), VideoActivity.class);
                 intent.putExtra("VIDEO_ID", youTubeItems.get(position).getId());
                 intent.putExtra("VIDEO_TITLE", youTubeItems.get(position).getName());
+                startActivity(intent);
+            } else if (youTubeItems.get(position) instanceof YouTubeChannel) {
+                Intent intent = new Intent(getActivity(), ChannelActivity.class);
+                intent.putExtra("CHANNEL_ID", youTubeItems.get(position).getId());
+                intent.putExtra("CHANNEL_NAME", youTubeItems.get(position).getName());
                 startActivity(intent);
             }
         }
@@ -146,15 +158,49 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    private void GetHomeScreenVideos() {
+        AsyncGetHomeScreenItems getHomeScreenItems = new AsyncGetHomeScreenItems(
+                getActivity(), nextPageToken,
+                new TaskCompleted() {
+                    @Override
+                    public void onTaskComplete(YouTubeResult result) {
+                        if (!result.isCanceled() && result.getYouTubeVideos() != null) {
+                            nextPageToken = result.getNextPageToken();
+                            youTubeItems.addAll(result.getYouTubeVideos());
+                        }
+                        updateView(TaskStatus.FINISHED);
+                    }
+                });
+
+        getHomeScreenItems.execute();
+        updateView(TaskStatus.RUNNING);
+    }
+
+    private void updateView(TaskStatus taskStatus) {
+        if (taskStatus == TaskStatus.RUNNING) {
+            progressBar.setVisibility(View.VISIBLE);
+            footer.setVisibility(View.GONE);
+        } else if (taskStatus == TaskStatus.FINISHED) {
+            if (youTubeItems.size() != 0 && youTubeItems.size() % 20 == 0) {
+                footer.setVisibility(View.VISIBLE);
+            }
+            if (nextPageToken == null) {
+                footer.setVisibility(View.GONE);
+            }
+            youTubeItemAdapter.notifyDataSetChanged();
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
     private void GetYouTubeItems(String order) {
+        setHasOptionsMenu(true);
+
         if (hasChanged) {
             youTubeItems.clear();
             nextPageToken = null;
         }
         hasChanged = false;
-
-        progressBar.setVisibility(View.VISIBLE);
-        footer.setVisibility(View.GONE);
+        hasChangedAtAll = true;
 
         AsyncGetItems getItems = new AsyncGetItems(getActivity(),
                 searchParameter, order, nextPageToken,
@@ -167,20 +213,13 @@ public class HomeFragment extends Fragment {
                             if (youTubeItems.size() == 0) {
                                 Toast.makeText(getActivity(), "No results found", Toast.LENGTH_LONG).show();
                             }
-
-                            if (youTubeItems.size() != 0 && youTubeItems.size() % 20 == 0) {
-                                footer.setVisibility(View.VISIBLE);
-                            }
-                            if (result.getNextPageToken() == null) {
-                                footer.setVisibility(View.GONE);
-                            }
-                            youTubeItemAdapter.notifyDataSetChanged();
                         }
-                        progressBar.setVisibility(View.GONE);
+                        updateView(TaskStatus.FINISHED);
                     }
                 });
 
         getItems.execute();
+        updateView(TaskStatus.RUNNING);
     }
 
     private String getOrderFromPreferences() {
@@ -205,7 +244,7 @@ public class HomeFragment extends Fragment {
                         public void OnOrderSelected(String order) {
                             youTubeItems.clear();
                             nextPageToken = null;
-                            GetYouTubeItems(getOrderFromPreferences());
+                            GetYouTubeItems(order);
                         }
                     });
             menu.SortItems();

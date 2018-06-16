@@ -5,22 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.wordpress.dnvsoft.youtubelite.VideoActivity">
-
-    <com.wordpress.dnvsoft.youtubelite.views.LinearLayoutWithTouchListener
-        android:id="@+id/layout_below_player"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <fragment
-            android:id="@+id/youtube_fragment"
-            android:name="com.google.android.youtube.player.YouTubePlayerFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:filterTouchesWhenObscured="false" />
-    </com.wordpress.dnvsoft.youtubelite.views.LinearLayoutWithTouchListener>
+    tools:context=".ChannelActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -30,33 +15,40 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.TabLayout
-            android:id="@+id/video_tabs"
+            android:id="@+id/channel_tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:tabTextAppearance="@style/LowerTabText">
 
             <android.support.design.widget.TabItem
-                android:id="@+id/tabItemDescription"
+                android:id="@+id/channelTabItemVideos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/activity_video_tab_description" />
+                android:text="@string/activity_channel_tab_videos" />
 
             <android.support.design.widget.TabItem
-                android:id="@+id/tabItemVideos"
+                android:id="@+id/channelTabItemPlayLists"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/activity_video_tab_videos" />
+                android:text="@string/activity_channel_tab_playlists" />
 
             <android.support.design.widget.TabItem
-                android:id="@+id/tabItemComments"
+                android:id="@+id/channelTabItemChannels"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/activity_video_tab_comments" />
+                android:text="@string/activity_channel_tab_channels" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/channelTabItemAbout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_channel_tab_about" />
 
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/videos_container_video"
+        android:id="@+id/channels_container_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />

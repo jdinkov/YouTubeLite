@@ -17,7 +17,7 @@ import com.wordpress.dnvsoft.youtubelite.models.YouTubePlaylist;
 
 import java.util.ArrayList;
 
-public class YouTubeItemAdapter<T> extends ArrayAdapter<T> {
+public class YouTubeItemAdapter<T extends YouTubeItem> extends ArrayAdapter<T> {
 
     private Context context;
     private ArrayList<T> objects;
@@ -40,7 +40,7 @@ public class YouTubeItemAdapter<T> extends ArrayAdapter<T> {
         YouTubeThumbnailView youTubeThumbnailView = convertView.findViewById(R.id.listViewThumbnailPlayListItems);
         ImageView imageView = convertView.findViewById(R.id.listViewImage);
 
-        final YouTubeItem youTubeItem = (YouTubeItem) objects.get(position);
+        final YouTubeItem youTubeItem = objects.get(position);
         textView.setText(youTubeItem.getName());
         Picasso.with(context).load(youTubeItem.getThumbnailURL()).into(youTubeThumbnailView);
         if (youTubeItem instanceof YouTubePlaylist) {

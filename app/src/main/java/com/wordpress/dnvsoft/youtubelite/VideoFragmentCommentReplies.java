@@ -129,7 +129,7 @@ public class VideoFragmentCommentReplies extends Fragment implements OnCommentAd
 
         buttonLoadMore.setOnClickListener(onClickListener);
 
-        adapter = new CommentAdapter(getActivity(), R.layout.list_view_comments, youTubeComments, true,
+        adapter = new CommentAdapter<>(getActivity(), R.layout.list_view_comments, youTubeComments, true,
                 VideoFragmentCommentReplies.this);
         listView.setAdapter(adapter);
 

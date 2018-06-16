@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class YouTubeResult {
 
     private String channelId;
+    private String channelUploadsId;
     private boolean isCanceled;
     private String nextPageToken;
     private ArrayList<YouTubeItem> youTubeItems;
@@ -18,6 +19,14 @@ public class YouTubeResult {
 
     public void setChannelId(String channelId) {
         this.channelId = channelId;
+    }
+
+    public String getChannelUploadsId() {
+        return channelUploadsId;
+    }
+
+    public void setChannelUploadsId(String channelUploadsId) {
+        this.channelUploadsId = channelUploadsId;
     }
 
     public boolean isCanceled() {

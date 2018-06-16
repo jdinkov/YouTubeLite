@@ -20,16 +20,16 @@ import com.wordpress.dnvsoft.youtubelite.models.YouTubeComment;
 
 import java.util.ArrayList;
 
-public class CommentAdapter extends ArrayAdapter {
+public class CommentAdapter<T extends YouTubeComment> extends ArrayAdapter<T> {
 
     protected Context context;
     protected int layout;
     private boolean isReply;
     OnCommentAddEditListener listener;
     String channelId;
-    ArrayList objects;
+    ArrayList<T> objects;
 
-    public CommentAdapter(@NonNull Context context, int layout, ArrayList objects, boolean isReply,
+    public CommentAdapter(@NonNull Context context, int layout, ArrayList<T> objects, boolean isReply,
                           OnCommentAddEditListener listener) {
         super(context, layout, objects);
         this.context = context;
@@ -63,7 +63,7 @@ public class CommentAdapter extends ArrayAdapter {
         ImageView imageViewDislike = convertView.findViewById(R.id.imageViewDislike);
         Button buttonEditComment = convertView.findViewById(R.id.buttonEditComment);
 
-        final YouTubeComment youTubeComment = (YouTubeComment) objects.get(position);
+        final YouTubeComment youTubeComment = objects.get(position);
         Picasso.with(context).load(youTubeComment.getAuthorImageUrl()).into(imageViewProfilePic);
         textViewProfileName.setText(youTubeComment.getAuthorDisplayName());
         textViewCommentText.setText(youTubeComment.getCommentText());
@@ -98,7 +98,7 @@ public class CommentAdapter extends ArrayAdapter {
     };
 
     protected void SelectOption(int position) {
-        YouTubeComment comment = (YouTubeComment) objects.get(position);
+        YouTubeComment comment = objects.get(position);
         Enum<CommentOptionMenu.OptionsToDisplay> option;
         if (comment.getAuthorChannelId().equals(channelId)) {
             option = CommentOptionMenu.OptionsToDisplay.EDIT;

@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -67,11 +66,11 @@ public class VideoActivity extends AppCompatActivity
 
         TabsAdapter mSectionsPagerAdapter = new TabsAdapter(getSupportFragmentManager());
 
-        ViewPager mViewPager = findViewById(R.id.container_video);
+        ViewPager mViewPager = findViewById(R.id.videos_container_video);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(onPageChangeListener);
 
-        TabLayout tabLayout = findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.video_tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
@@ -219,7 +218,7 @@ public class VideoActivity extends AppCompatActivity
     public class TabsAdapter extends FragmentPagerAdapter {
 
         private VideoFragmentDescription fragmentDescription;
-        private VideoFragmentVideos fragmentVideos;
+        private YouTubeItemsFragment fragmentVideos;
         private VideoFragmentRootComments fragmentRootComments;
 
         TabsAdapter(FragmentManager fm) {
