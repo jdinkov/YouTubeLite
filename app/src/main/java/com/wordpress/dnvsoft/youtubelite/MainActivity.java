@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity
                     public void onTaskComplete(YouTubeResult result) {
                         SharedPreferences.Editor editor =
                                 getSharedPreferences("CHANNEL_ID_PREFERENCES", MODE_PRIVATE).edit();
-                        editor.putString("CHANNEL_ID", result.getChannelId());
+                        editor.putString("CHANNEL_ID", result.getYouTubeChannel().getId());
                         editor.apply();
                     }
                 });

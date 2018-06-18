@@ -7,7 +7,7 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import com.wordpress.dnvsoft.youtubelite.YoutubeInfo;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeChannel;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
-import com.wordpress.dnvsoft.youtubelite.models.YouTubePlaylist;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubePlayList;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
 
@@ -55,7 +55,7 @@ public class AsyncGetItems extends AsyncYoutube {
                 }
                 break;
                 case "youtube#playlist": {
-                    item = new YouTubePlaylist();
+                    item = new YouTubePlayList();
                     item.setId(searchListResponse.getItems().get(i).getId().getPlaylistId());
                 }
                 break;

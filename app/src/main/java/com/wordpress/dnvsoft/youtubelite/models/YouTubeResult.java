@@ -4,30 +4,14 @@ import java.util.ArrayList;
 
 public class YouTubeResult {
 
-    private String channelId;
-    private String channelUploadsId;
     private boolean isCanceled;
     private String nextPageToken;
+    private YouTubeChannel youTubeChannel;
     private ArrayList<YouTubeItem> youTubeItems;
     private ArrayList<YouTubeVideo> youTubeVideos;
+    private ArrayList<YouTubePlayList> youTubePlayLists;
     private ArrayList<YouTubeCommentThread> commentThread;
     private ArrayList<YouTubeComment> commentReplies;
-
-    public String getChannelId() {
-        return channelId;
-    }
-
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
-    }
-
-    public String getChannelUploadsId() {
-        return channelUploadsId;
-    }
-
-    public void setChannelUploadsId(String channelUploadsId) {
-        this.channelUploadsId = channelUploadsId;
-    }
 
     public boolean isCanceled() {
         return isCanceled;
@@ -39,6 +23,14 @@ public class YouTubeResult {
 
     public String getNextPageToken() {
         return nextPageToken;
+    }
+
+    public YouTubeChannel getYouTubeChannel() {
+        return youTubeChannel;
+    }
+
+    public void setYouTubeChannel(YouTubeChannel youTubeChannel) {
+        this.youTubeChannel = youTubeChannel;
     }
 
     public void setNextPageToken(String nextPageToken) {
@@ -59,6 +51,14 @@ public class YouTubeResult {
 
     public void setYouTubeVideos(ArrayList<YouTubeVideo> youTubeVideos) {
         this.youTubeVideos = youTubeVideos;
+    }
+
+    public ArrayList<YouTubePlayList> getYouTubePlayLists() {
+        return youTubePlayLists;
+    }
+
+    public void setYouTubePlayLists(ArrayList<YouTubePlayList> youTubePlayLists) {
+        this.youTubePlayLists = youTubePlayLists;
     }
 
     public ArrayList<YouTubeCommentThread> getCommentThread() {

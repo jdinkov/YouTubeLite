@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ChannelListResponse;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeChannel;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
 import java.io.IOException;
@@ -28,8 +29,11 @@ public class AsyncGetChannelInfo extends AsyncYoutube {
         channelList.setFields("items(id,contentDetails/relatedPlaylists/uploads)");
 
         ChannelListResponse response = channelList.execute();
-        result.setChannelId(response.getItems().get(0).getId());
-        result.setChannelUploadsId(response.getItems().get(0).getContentDetails().getRelatedPlaylists().getUploads());
+        YouTubeChannel channel = new YouTubeChannel();
+        channel.setId(response.getItems().get(0).getId());
+        channel.setUploadsId(response.getItems().get(0).getContentDetails().getRelatedPlaylists().getUploads());
+
+        result.setYouTubeChannel(channel);
 
         return result;
     }

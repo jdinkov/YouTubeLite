@@ -15,7 +15,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.wordpress.dnvsoft.youtubelite.menus.MissingServiceMenu;
-import com.wordpress.dnvsoft.youtubelite.models.VideoItemWrapper;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeItemJsonHelper;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
 import com.wordpress.dnvsoft.youtubelite.views.LinearLayoutWithTouchListener;
 
@@ -51,8 +51,7 @@ public class VideoActivity extends AppCompatActivity
 
         videoPosition = getIntent().getIntExtra("VIDEO_POSITION", Integer.MIN_VALUE);
         if (videoPosition != Integer.MIN_VALUE) {
-            VideoItemWrapper wrapper = (VideoItemWrapper) getIntent().getSerializableExtra("ITEMS");
-            items.addAll(wrapper.getItems());
+            items.addAll(YouTubeItemJsonHelper.fromJson(getIntent().getStringExtra("ITEMS")));
             playlistID = getIntent().getStringExtra("PLAYLIST_ID");
             videoID = items.get(getItemPosition()).getId();
             videoTitle = items.get(getItemPosition()).getName();
@@ -91,7 +90,7 @@ public class VideoActivity extends AppCompatActivity
 
                     intent.putExtra("PLAYLIST_ID", playlistID);
                     intent.putExtra("VIDEO_POSITION", videoPosition);
-                    intent.putExtra("ITEMS", new VideoItemWrapper(items));
+                    intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
                     startActivity(intent);
                 }
 
@@ -102,7 +101,7 @@ public class VideoActivity extends AppCompatActivity
 
                     intent.putExtra("PLAYLIST_ID", playlistID);
                     intent.putExtra("VIDEO_POSITION", videoPosition);
-                    intent.putExtra("ITEMS", new VideoItemWrapper(items));
+                    intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
                     startActivity(intent);
                 }
 
@@ -185,13 +184,6 @@ public class VideoActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(VideoActivity.this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-
-    @Override
     public void setCommentCount(String commentCount) {
         this.commentCount = commentCount;
     }
@@ -218,7 +210,7 @@ public class VideoActivity extends AppCompatActivity
     public class TabsAdapter extends FragmentPagerAdapter {
 
         private VideoFragmentDescription fragmentDescription;
-        private YouTubeItemsFragment fragmentVideos;
+        private VideoFragmentVideos fragmentVideos;
         private VideoFragmentRootComments fragmentRootComments;
 
         TabsAdapter(FragmentManager fm) {

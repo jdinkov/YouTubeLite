@@ -34,7 +34,7 @@ public class CommentThreadAdapter extends CommentAdapter<YouTubeCommentThread> {
 
         TextView textViewRepliesCount = convertView.findViewById(R.id.textViewRepliesCount);
 
-        final YouTubeCommentThread youTubeComment = (YouTubeCommentThread) objects.get(position);
+        final YouTubeCommentThread youTubeComment = objects.get(position);
         textViewRepliesCount.setText(replyText(youTubeComment.getTotalReplyCount()));
         textViewRepliesCount.setTag(position);
         textViewRepliesCount.setOnClickListener(onClickListener);
@@ -51,11 +51,11 @@ public class CommentThreadAdapter extends CommentAdapter<YouTubeCommentThread> {
         @Override
         public void onClick(View v) {
             int position = (Integer) v.getTag();
-            YouTubeCommentThread youTubeCommentThread = (YouTubeCommentThread) objects.get(position);
+            YouTubeCommentThread youTubeCommentThread = objects.get(position);
             if (!youTubeCommentThread.getTotalReplyCount().equals("0")) {
                 FragmentTransaction fragmentTransaction =
                         ((VideoActivity) context).getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.root_fragment,
+                fragmentTransaction.replace(R.id.root_fragment_comments,
                         VideoFragmentCommentReplies.newInstance(youTubeCommentThread));
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 fragmentTransaction.addToBackStack(null);
@@ -77,7 +77,7 @@ public class CommentThreadAdapter extends CommentAdapter<YouTubeCommentThread> {
 
     @Override
     protected void SelectOption(int position) {
-        YouTubeCommentThread comment = (YouTubeCommentThread) objects.get(position);
+        YouTubeCommentThread comment = objects.get(position);
         Enum<CommentOptionMenu.OptionsToDisplay> option;
         if (comment.getCanReply() && comment.getAuthorChannelId().equals(channelId)) {
             option = CommentOptionMenu.OptionsToDisplay.INSERT_AND_EDIT;

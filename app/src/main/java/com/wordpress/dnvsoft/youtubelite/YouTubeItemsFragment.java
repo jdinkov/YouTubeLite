@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.wordpress.dnvsoft.youtubelite.adapters.YouTubeItemAdapter;
-import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
 import com.wordpress.dnvsoft.youtubelite.network.Network;
 
 import java.util.ArrayList;
@@ -22,9 +22,9 @@ public abstract class YouTubeItemsFragment extends Fragment {
 
     LinearLayout footer;
     Button buttonLoadMore;
-    YouTubeItemAdapter<YouTubeVideo> adapter;
+    YouTubeItemAdapter<YouTubeItem> adapter;
     String nextPageToken;
-    ArrayList<YouTubeVideo> youTubeVideos = new ArrayList<>();
+    ArrayList<YouTubeItem> youTubeItems = new ArrayList<>();
     String playlistId;
 
     public YouTubeItemsFragment() {
@@ -42,9 +42,9 @@ public abstract class YouTubeItemsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_video_videos, container, false);
+        View view = inflater.inflate(R.layout.fragment_list_items, container, false);
 
-        ListView listView = view.findViewById(R.id.listViewVideo);
+        ListView listView = view.findViewById(R.id.listViewItem);
 
         footer = (LinearLayout) inflater.inflate(R.layout.footer_main, listView, false);
         buttonLoadMore = footer.findViewById(R.id.buttonFooterMain);
@@ -59,7 +59,7 @@ public abstract class YouTubeItemsFragment extends Fragment {
         buttonLoadMore.setOnClickListener(buttonLoadMoreOnClickListener);
         listView.setOnItemClickListener(onItemClickListener);
 
-        adapter = new YouTubeItemAdapter<>(getContext(), youTubeVideos);
+        adapter = new YouTubeItemAdapter<>(getContext(), youTubeItems);
         listView.setAdapter(adapter);
 
         if (playlistId != null) {
@@ -75,11 +75,11 @@ public abstract class YouTubeItemsFragment extends Fragment {
         @Override
         public void onClick(View v) {
             footer.setVisibility(View.GONE);
-            getVideosFromYouTube();
+            getItemsFromYouTube();
         }
     };
 
-    abstract void getVideosFromYouTube();
+    abstract void getItemsFromYouTube();
 
     ListView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override

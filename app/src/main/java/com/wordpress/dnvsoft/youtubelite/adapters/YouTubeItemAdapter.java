@@ -13,7 +13,7 @@ import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.squareup.picasso.Picasso;
 import com.wordpress.dnvsoft.youtubelite.R;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
-import com.wordpress.dnvsoft.youtubelite.models.YouTubePlaylist;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubePlayList;
 
 import java.util.ArrayList;
 
@@ -43,7 +43,7 @@ public class YouTubeItemAdapter<T extends YouTubeItem> extends ArrayAdapter<T> {
         final YouTubeItem youTubeItem = objects.get(position);
         textView.setText(youTubeItem.getName());
         Picasso.with(context).load(youTubeItem.getThumbnailURL()).into(youTubeThumbnailView);
-        if (youTubeItem instanceof YouTubePlaylist) {
+        if (youTubeItem instanceof YouTubePlayList) {
             imageView.setVisibility(View.VISIBLE);
         } else {
             imageView.setVisibility(View.GONE);

@@ -4,47 +4,37 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetChannelInfo;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlaylistItems;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeItemJsonHelper;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
-public class ChannelFragmentVideos extends YouTubeItemsFragment {
+public class ChannelFragmentPlayListItems extends YouTubeItemsFragment {
 
-    String uploadsId;
-    private String channelId;
+    private String playlistId;
+    private String nextPageToken;
 
-    public static ChannelFragmentVideos newInstance(String channelId) {
-        ChannelFragmentVideos channelFragmentVideos = new ChannelFragmentVideos();
+    public ChannelFragmentPlayListItems() {
+    }
+
+    public static ChannelFragmentPlayListItems newInstance(String playlistId) {
+        ChannelFragmentPlayListItems channelFragmentPlayListItems = new ChannelFragmentPlayListItems();
         Bundle bundle = new Bundle();
-        bundle.putString("CHANNEL_ID", channelId);
-        channelFragmentVideos.setArguments(bundle);
-        return channelFragmentVideos;
+        bundle.putString("PLAYLIST_ID", playlistId);
+        channelFragmentPlayListItems.setArguments(bundle);
+        return channelFragmentPlayListItems;
     }
 
     @Override
     public void onCreateYouTubeItemsFragment() {
-        channelId = getArguments().getString("CHANNEL_ID");
-        getChannelUploadsId().execute();
-    }
-
-    private AsyncGetChannelInfo getChannelUploadsId() {
-        return new AsyncGetChannelInfo(getActivity(), channelId,
-                new TaskCompleted() {
-                    @Override
-                    public void onTaskComplete(YouTubeResult result) {
-                        if (!result.isCanceled()) {
-                            uploadsId = result.getYouTubeChannel().getUploadsId();
-                            getItemsFromYouTube();
-                        }
-                    }
-                });
+        playlistId = getArguments().getString("PLAYLIST_ID");
+        getItemsFromYouTube();
     }
 
     @Override
     void getItemsFromYouTube() {
         AsyncGetPlaylistItems getPlaylistItems = new AsyncGetPlaylistItems(
-                getActivity(), uploadsId, nextPageToken,
+                getActivity(), playlistId, nextPageToken,
                 new TaskCompleted() {
                     @Override
                     public void onTaskComplete(YouTubeResult result) {
@@ -67,8 +57,9 @@ public class ChannelFragmentVideos extends YouTubeItemsFragment {
     @Override
     public void onVideoClick(int position) {
         Intent intent = new Intent(getActivity(), VideoActivity.class);
-        intent.putExtra("VIDEO_ID", youTubeItems.get(position).getId());
-        intent.putExtra("VIDEO_TITLE", youTubeItems.get(position).getName());
+        intent.putExtra("PLAYLIST_ID", playlistId);
+        intent.putExtra("VIDEO_POSITION", position);
+        intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(youTubeItems));
         startActivity(intent);
     }
 }

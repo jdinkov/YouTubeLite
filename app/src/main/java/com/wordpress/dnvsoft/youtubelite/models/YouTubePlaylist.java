@@ -1,6 +1,6 @@
 package com.wordpress.dnvsoft.youtubelite.models;
 
-public class YouTubePlaylist implements YouTubeItem {
+public class YouTubePlayList implements YouTubeItem {
 
     private String Id;
     private String name;

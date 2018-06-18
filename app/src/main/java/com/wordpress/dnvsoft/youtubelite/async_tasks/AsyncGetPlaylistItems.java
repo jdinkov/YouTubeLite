@@ -13,12 +13,12 @@ import java.util.ArrayList;
 
 public class AsyncGetPlaylistItems extends AsyncYoutube {
 
-    private String uploadsId;
+    private String playlistId;
     private String pageToken;
 
-    public AsyncGetPlaylistItems(Context c, String uploadsId, String pageToken, TaskCompleted callback) {
+    public AsyncGetPlaylistItems(Context c, String playlistId, String pageToken, TaskCompleted callback) {
         super(c, callback);
-        this.uploadsId = uploadsId;
+        this.playlistId = playlistId;
         this.pageToken = pageToken;
     }
 
@@ -29,7 +29,7 @@ public class AsyncGetPlaylistItems extends AsyncYoutube {
 
         YouTube.PlaylistItems.List playListItemsList = youtube.playlistItems().list("snippet,status");
         playListItemsList.setFields("items(snippet(title,thumbnails/medium/url,resourceId/videoId),status/privacyStatus),nextPageToken");
-        playListItemsList.setPlaylistId(uploadsId);
+        playListItemsList.setPlaylistId(playlistId);
         playListItemsList.setPageToken(pageToken);
         playListItemsList.setMaxResults((long) 20);
         if (accountEmail == null) {

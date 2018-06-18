@@ -26,7 +26,7 @@ public class VideoFragmentRootComments extends Fragment {
         View view = inflater.inflate(R.layout.fragment_root_comments, container, false);
 
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.root_fragment,
+        fragmentTransaction.replace(R.id.root_fragment_comments,
                 VideoFragmentComments.newInstance(getArguments().getString("VIDEO_ID")));
         fragmentTransaction.commit();
 
