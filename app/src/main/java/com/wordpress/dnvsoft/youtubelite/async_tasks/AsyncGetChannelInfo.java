@@ -21,19 +21,23 @@ public class AsyncGetChannelInfo extends AsyncYoutube {
     @Override
     YouTubeResult DoItInBackground() throws IOException {
 
-        YouTube.Channels.List channelList = youtube.channels().list("id,contentDetails");
+        YouTube.Channels.List channelList = youtube.channels().list("snippet,contentDetails");
         channelList.setId(channelId);
         if (channelId == null) {
             channelList.setMine(true);
         }
-        channelList.setFields("items(id,contentDetails/relatedPlaylists/uploads)");
+        channelList.setFields("items(id,snippet(title,description,thumbnails/medium/url),contentDetails/relatedPlaylists/uploads)");
 
         ChannelListResponse response = channelList.execute();
         YouTubeChannel channel = new YouTubeChannel();
-        channel.setId(response.getItems().get(0).getId());
-        channel.setUploadsId(response.getItems().get(0).getContentDetails().getRelatedPlaylists().getUploads());
-
-        result.setYouTubeChannel(channel);
+        if (response.getItems().size() > 0) {
+            channel.setId(response.getItems().get(0).getId());
+            channel.setName(response.getItems().get(0).getSnippet().getTitle());
+            channel.setThumbnailURL(response.getItems().get(0).getSnippet().getThumbnails().getMedium().getUrl());
+            channel.setUploadsId(response.getItems().get(0).getContentDetails().getRelatedPlaylists().getUploads());
+            channel.setDescription(response.getItems().get(0).getSnippet().getDescription());
+            result.setYouTubeChannel(channel);
+        }
 
         return result;
     }

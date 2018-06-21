@@ -3,6 +3,7 @@ package com.wordpress.dnvsoft.youtubelite;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.widget.TextView;
 
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlayLists;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
@@ -11,7 +12,6 @@ import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 public class ChannelFragmentPlayLists extends YouTubeItemsFragment {
 
     private String channelId;
-    private String nextPageToken;
 
     public ChannelFragmentPlayLists() {
     }
@@ -31,6 +31,12 @@ public class ChannelFragmentPlayLists extends YouTubeItemsFragment {
     }
 
     @Override
+    void onStateRestored() {
+        updateViewContentInfo("This channel has no playlists.");
+        updateViewFooter();
+    }
+
+    @Override
     void getItemsFromYouTube() {
         AsyncGetPlayLists playLists = new AsyncGetPlayLists(
                 getActivity(), channelId, nextPageToken,
@@ -46,6 +52,13 @@ public class ChannelFragmentPlayLists extends YouTubeItemsFragment {
                             youTubeItems.addAll(result.getYouTubePlayLists());
                             adapter.notifyDataSetChanged();
                             buttonLoadMore.setText(R.string.load_more);
+                        }
+
+                        if (youTubeItems.size() != 0) {
+                            haveContent = true;
+                        } else {
+                            TextView textView = getView().findViewById(R.id.textViewContentInfo);
+                            textView.setVisibility(View.VISIBLE);
                         }
                     }
                 });

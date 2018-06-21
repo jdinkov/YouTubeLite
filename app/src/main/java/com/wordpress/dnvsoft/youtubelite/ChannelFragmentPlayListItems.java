@@ -2,7 +2,6 @@ package com.wordpress.dnvsoft.youtubelite;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlaylistItems;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
@@ -32,22 +31,19 @@ public class ChannelFragmentPlayListItems extends YouTubeItemsFragment {
     }
 
     @Override
+    void onStateRestored() {
+        updateViewContentInfo("This playlist is empty.");
+        updateViewFooter();
+    }
+
+    @Override
     void getItemsFromYouTube() {
         AsyncGetPlaylistItems getPlaylistItems = new AsyncGetPlaylistItems(
                 getActivity(), playlistId, nextPageToken,
                 new TaskCompleted() {
                     @Override
                     public void onTaskComplete(YouTubeResult result) {
-                        if (!result.isCanceled() && result.getYouTubeVideos() != null) {
-                            if (result.getYouTubeVideos().size() % 20 == 0) {
-                                footer.setVisibility(View.VISIBLE);
-                            }
-
-                            nextPageToken = result.getNextPageToken();
-                            youTubeItems.addAll(result.getYouTubeVideos());
-                            adapter.notifyDataSetChanged();
-                            buttonLoadMore.setText(R.string.load_more);
-                        }
+                        asyncTaskCompleted.onTaskComplete(result);
                     }
                 });
 

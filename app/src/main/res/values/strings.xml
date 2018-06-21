@@ -37,5 +37,10 @@
     <string name="activity_channel_tab_playlists">PlayLists</string>
     <string name="activity_channel_tab_channels">Channels</string>
     <string name="activity_channel_tab_about">About</string>
+    <string name="text_view_channel_info">This channel has no info.</string>
+    <string name="subscribed">Subscribed</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="this_channel_has_no_content">This channel has no content.</string>
+    <string name="doesnt_feature_any_other_channels">This channel doesn\'t feature any other channels.</string>
 
 </resources>

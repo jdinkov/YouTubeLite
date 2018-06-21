@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/textViewContentInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center_horizontal"
+        android:text="@string/this_channel_has_no_content"
+        android:visibility="gone" />
+
     <ListView
         android:id="@+id/listViewItem"
         android:layout_width="match_parent"

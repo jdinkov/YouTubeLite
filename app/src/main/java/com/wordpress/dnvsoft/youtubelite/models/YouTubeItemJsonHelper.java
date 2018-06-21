@@ -1,5 +1,6 @@
 package com.wordpress.dnvsoft.youtubelite.models;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,14 +11,16 @@ public class YouTubeItemJsonHelper implements Serializable {
 
     public static String toJson(ArrayList<? extends YouTubeItem> youTubeItems) {
         JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
         try {
             for (int i = 0; i < youTubeItems.size(); i++) {
                 JSONObject item = new JSONObject();
                 item.put("id", youTubeItems.get(i).getId());
                 item.put("name", youTubeItems.get(i).getName());
                 item.put("thumbnailURL", youTubeItems.get(i).getThumbnailURL());
-                jsonObject.put(String.valueOf(i), item);
+                jsonArray.put(i, item);
             }
+            jsonObject.put("items", jsonArray);
         } catch (JSONException e) {
             return null;
         }
@@ -28,9 +31,9 @@ public class YouTubeItemJsonHelper implements Serializable {
     public static ArrayList<YouTubeVideo> fromJson(String jsonString) {
         ArrayList<YouTubeVideo> arrayList = new ArrayList<>();
         try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-            for (int i = 0; i < jsonObject.length(); i++) {
-                JSONObject item = new JSONObject(jsonObject.getString(String.valueOf(i)));
+            JSONArray jsonArray = new JSONArray(new JSONObject(jsonString).getJSONArray("items").toString());
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject item = new JSONObject(jsonArray.getString(i));
                 YouTubeVideo tempCommentThread = new YouTubeVideo();
                 tempCommentThread.setId(item.getString("id"));
                 tempCommentThread.setName(item.getString("name"));
@@ -38,7 +41,7 @@ public class YouTubeItemJsonHelper implements Serializable {
                 arrayList.add(tempCommentThread);
             }
         } catch (JSONException e) {
-            return null;
+            return arrayList;
         }
 
         return arrayList;

@@ -2,7 +2,6 @@ package com.wordpress.dnvsoft.youtubelite;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetChannelInfo;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlaylistItems;
@@ -28,6 +27,12 @@ public class ChannelFragmentVideos extends YouTubeItemsFragment {
         getChannelUploadsId().execute();
     }
 
+    @Override
+    void onStateRestored() {
+        updateViewContentInfo("This channel has no videos.");
+        updateViewFooter();
+    }
+
     private AsyncGetChannelInfo getChannelUploadsId() {
         return new AsyncGetChannelInfo(getActivity(), channelId,
                 new TaskCompleted() {
@@ -48,16 +53,7 @@ public class ChannelFragmentVideos extends YouTubeItemsFragment {
                 new TaskCompleted() {
                     @Override
                     public void onTaskComplete(YouTubeResult result) {
-                        if (!result.isCanceled() && result.getYouTubeVideos() != null) {
-                            if (result.getYouTubeVideos().size() % 20 == 0) {
-                                footer.setVisibility(View.VISIBLE);
-                            }
-
-                            nextPageToken = result.getNextPageToken();
-                            youTubeItems.addAll(result.getYouTubeVideos());
-                            adapter.notifyDataSetChanged();
-                            buttonLoadMore.setText(R.string.load_more);
-                        }
+                        asyncTaskCompleted.onTaskComplete(result);
                     }
                 });
 

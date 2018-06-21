@@ -7,6 +7,7 @@ public class YouTubeResult {
     private boolean isCanceled;
     private String nextPageToken;
     private YouTubeChannel youTubeChannel;
+    private ArrayList<YouTubeChannel> youTubeChannels;
     private ArrayList<YouTubeItem> youTubeItems;
     private ArrayList<YouTubeVideo> youTubeVideos;
     private ArrayList<YouTubePlayList> youTubePlayLists;
@@ -25,6 +26,10 @@ public class YouTubeResult {
         return nextPageToken;
     }
 
+    public void setNextPageToken(String nextPageToken) {
+        this.nextPageToken = nextPageToken;
+    }
+
     public YouTubeChannel getYouTubeChannel() {
         return youTubeChannel;
     }
@@ -33,16 +38,20 @@ public class YouTubeResult {
         this.youTubeChannel = youTubeChannel;
     }
 
-    public void setNextPageToken(String nextPageToken) {
-        this.nextPageToken = nextPageToken;
+    public ArrayList<YouTubeChannel> getYouTubeChannels() {
+        return youTubeChannels;
+    }
+
+    public void setYouTubeChannels(ArrayList<YouTubeChannel> youTubeChannels) {
+        this.youTubeChannels = youTubeChannels;
     }
 
     public ArrayList<YouTubeItem> getYouTubeItems() {
         return youTubeItems;
     }
 
-    public void setYouTubeItems(ArrayList<YouTubeItem> youTubeVideos) {
-        this.youTubeItems = youTubeVideos;
+    public void setYouTubeItems(ArrayList<YouTubeItem> youTubeItems) {
+        this.youTubeItems = youTubeItems;
     }
 
     public ArrayList<YouTubeVideo> getYouTubeVideos() {

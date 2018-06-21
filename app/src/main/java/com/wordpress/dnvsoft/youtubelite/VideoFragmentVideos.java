@@ -2,7 +2,6 @@ package com.wordpress.dnvsoft.youtubelite;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetVideos;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
@@ -39,27 +38,17 @@ public class VideoFragmentVideos extends YouTubeItemsFragment {
     }
 
     @Override
+    void onStateRestored() {
+        updateViewFooter();
+    }
+
+    @Override
     void getItemsFromYouTube() {
         AsyncGetVideos getVideos = new AsyncGetVideos(getContext(), videoID, nextPageToken,
                 new TaskCompleted() {
                     @Override
                     public void onTaskComplete(YouTubeResult result) {
-                        if (!result.isCanceled() && result.getYouTubeVideos() != null) {
-                            if (result.getYouTubeVideos().size() % 20 == 0) {
-                                footer.setVisibility(View.VISIBLE);
-                            }
-
-                            nextPageToken = result.getNextPageToken();
-
-                            for (YouTubeVideo video : result.getYouTubeVideos()) {
-                                if (!video.getId().equals(videoID)) {
-                                    youTubeItems.add(video);
-                                }
-                            }
-
-                            buttonLoadMore.setText(R.string.load_more);
-                            adapter.notifyDataSetChanged();
-                        }
+                        asyncTaskCompleted.onTaskComplete(result);
                     }
                 });
 

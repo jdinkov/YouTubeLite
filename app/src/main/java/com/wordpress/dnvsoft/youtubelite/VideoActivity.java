@@ -53,8 +53,8 @@ public class VideoActivity extends AppCompatActivity
         if (videoPosition != Integer.MIN_VALUE) {
             items.addAll(YouTubeItemJsonHelper.fromJson(getIntent().getStringExtra("ITEMS")));
             playlistID = getIntent().getStringExtra("PLAYLIST_ID");
-            videoID = items.get(getItemPosition()).getId();
-            videoTitle = items.get(getItemPosition()).getName();
+            videoID = items.get(videoPosition).getId();
+            videoTitle = items.get(videoPosition).getName();
         } else {
             videoID = getIntent().getStringExtra("VIDEO_ID");
             videoTitle = getIntent().getStringExtra("VIDEO_TITLE");
@@ -91,6 +91,7 @@ public class VideoActivity extends AppCompatActivity
                     intent.putExtra("PLAYLIST_ID", playlistID);
                     intent.putExtra("VIDEO_POSITION", videoPosition);
                     intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
 
@@ -102,6 +103,7 @@ public class VideoActivity extends AppCompatActivity
                     intent.putExtra("PLAYLIST_ID", playlistID);
                     intent.putExtra("VIDEO_POSITION", videoPosition);
                     intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
 
@@ -158,10 +160,6 @@ public class VideoActivity extends AppCompatActivity
         public void onPageScrollStateChanged(int state) {
         }
     };
-
-    private int getItemPosition() {
-        return items.size() - videoPosition - 1;
-    }
 
     @Override
     protected void onStart() {

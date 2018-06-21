@@ -19,7 +19,6 @@ import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 public class ChannelActivity extends AppCompatActivity {
 
     private String channelId;
-    private String channelName;
     private int screenX;
 
     @Override
@@ -28,7 +27,9 @@ public class ChannelActivity extends AppCompatActivity {
         setContentView(R.layout.activity_channel);
 
         channelId = getIntent().getStringExtra("CHANNEL_ID");
-        channelName = getIntent().getStringExtra("CHANNEL_NAME");
+        String channelName = getIntent().getStringExtra("CHANNEL_NAME");
+
+        setTitle(channelName);
 
         TabsAdapter mSectionsPagerAdapter = new TabsAdapter(getSupportFragmentManager());
 
@@ -93,12 +94,14 @@ public class ChannelActivity extends AppCompatActivity {
         private ChannelFragmentVideos fragmentVideos;
         private ChannelFragmentRootPlayLists fragmentPlayLists;
         private ChannelFragmentFeaturedChannels fragmentFeaturedChannels;
+        private ChannelFragmentAbout fragmentAbout;
 
         TabsAdapter(FragmentManager fm) {
             super(fm);
             fragmentVideos = ChannelFragmentVideos.newInstance(channelId);
             fragmentPlayLists = ChannelFragmentRootPlayLists.newInstance(channelId);
             fragmentFeaturedChannels = ChannelFragmentFeaturedChannels.newInstance(channelId);
+            fragmentAbout = ChannelFragmentAbout.newInstance(channelId);
         }
 
         @Override
@@ -115,6 +118,10 @@ public class ChannelActivity extends AppCompatActivity {
                 break;
                 case 2: {
                     fragment = fragmentFeaturedChannels;
+                }
+                break;
+                case 3: {
+                    fragment = fragmentAbout;
                 }
                 break;
             }

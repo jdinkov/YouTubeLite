@@ -11,9 +11,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.wordpress.dnvsoft.youtubelite.adapters.YouTubeItemAdapter;
+import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 import com.wordpress.dnvsoft.youtubelite.network.Network;
 
 import java.util.ArrayList;
@@ -26,6 +29,8 @@ public abstract class YouTubeItemsFragment extends Fragment {
     String nextPageToken;
     ArrayList<YouTubeItem> youTubeItems = new ArrayList<>();
     String playlistId;
+    boolean haveContent;
+    private boolean hasPaused;
 
     public YouTubeItemsFragment() {
     }
@@ -37,7 +42,15 @@ public abstract class YouTubeItemsFragment extends Fragment {
         onCreateYouTubeItemsFragment();
     }
 
-    public abstract void onCreateYouTubeItemsFragment();
+    abstract void onCreateYouTubeItemsFragment();
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        onStateRestored();
+    }
+
+    abstract void onStateRestored();
 
     @Nullable
     @Override
@@ -88,5 +101,52 @@ public abstract class YouTubeItemsFragment extends Fragment {
         }
     };
 
-    public abstract void onVideoClick(int position);
+    abstract void onVideoClick(int position);
+
+    void updateViewContentInfo(String textViewString) {
+        TextView textView = getView().findViewById(R.id.textViewContentInfo);
+        if (youTubeItems.size() == 0 && !haveContent && hasPaused) {
+            textView.setVisibility(View.VISIBLE);
+            textView.setText(textViewString);
+        } else {
+            textView.setVisibility(View.GONE);
+        }
+    }
+
+    void updateViewFooter() {
+        if (youTubeItems.size() > 0 && youTubeItems.size() % 20 == 0 && nextPageToken != null) {
+            footer.setVisibility(View.VISIBLE);
+        } else {
+            footer.setVisibility(View.GONE);
+        }
+    }
+
+    public TaskCompleted asyncTaskCompleted = new TaskCompleted() {
+        @Override
+        public void onTaskComplete(YouTubeResult result) {
+            if (!result.isCanceled() && result.getYouTubeVideos() != null) {
+                if (result.getYouTubeVideos().size() % 20 == 0) {
+                    footer.setVisibility(View.VISIBLE);
+                }
+
+                buttonLoadMore.setText(R.string.load_more);
+                nextPageToken = result.getNextPageToken();
+                youTubeItems.addAll(result.getYouTubeVideos());
+                adapter.notifyDataSetChanged();
+            }
+
+            if (youTubeItems.size() != 0) {
+                haveContent = true;
+            } else {
+                TextView textView = getView().findViewById(R.id.textViewContentInfo);
+                textView.setVisibility(View.VISIBLE);
+            }
+        }
+    };
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hasPaused = true;
+    }
 }

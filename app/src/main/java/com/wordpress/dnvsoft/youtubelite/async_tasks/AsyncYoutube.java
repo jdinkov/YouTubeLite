@@ -79,8 +79,13 @@ abstract class AsyncYoutube extends AsyncTask<Void, String, YouTubeResult> {
         } catch (UserRecoverableAuthIOException e) {
             startActivityForResult((Activity) getAppContext(), e.getIntent(), REQUEST_AUTHORIZATION, null);
         } catch (GoogleJsonResponseException exception) {
-            String message = exception.getStatusMessage() + "\n" + exception.getDetails().getMessage();
-            publishProgress(message);
+            if (exception.getDetails().getErrors().get(0).getDomain().equals("youtube.subscription") &&
+                    exception.getDetails().getErrors().get(0).getReason().equals("subscriptionForbidden")) {
+                publishProgress("");
+            } else {
+                String message = exception.getStatusMessage() + "\n" + exception.getDetails().getMessage();
+                publishProgress(message);
+            }
         } catch (UnknownHostException exception) {
             String message = "No network connection available.";
             publishProgress(message);
@@ -96,7 +101,9 @@ abstract class AsyncYoutube extends AsyncTask<Void, String, YouTubeResult> {
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-        Toast.makeText(getAppContext(), values[0], Toast.LENGTH_LONG).show();
+        if (!values[0].equals("")) {
+            Toast.makeText(getAppContext(), values[0], Toast.LENGTH_LONG).show();
+        }
         result.setCanceled(true);
     }
 
