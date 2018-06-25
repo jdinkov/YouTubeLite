@@ -79,12 +79,16 @@ abstract class AsyncYoutube extends AsyncTask<Void, String, YouTubeResult> {
         } catch (UserRecoverableAuthIOException e) {
             startActivityForResult((Activity) getAppContext(), e.getIntent(), REQUEST_AUTHORIZATION, null);
         } catch (GoogleJsonResponseException exception) {
-            if (exception.getDetails().getErrors().get(0).getDomain().equals("youtube.subscription") &&
-                    exception.getDetails().getErrors().get(0).getReason().equals("subscriptionForbidden")) {
-                publishProgress("");
-            } else {
-                String message = exception.getStatusMessage() + "\n" + exception.getDetails().getMessage();
-                publishProgress(message);
+            if (exception != null) {
+                if (exception.getDetails().getErrors().get(0).getMessage().equals("The requester is not allowed to access the requested subscriptions.")) {
+                    publishProgress("");
+                } else if (exception.getDetails().getErrors().get(0).getMessage().equals("The request uses the <code>mine</code> parameter but is not properly authorized.")) {
+                    String message = "Unauthorized";
+                    publishProgress(message);
+                } else {
+                    String message = exception.getStatusMessage() + "\n" + exception.getDetails().getMessage();
+                    publishProgress(message);
+                }
             }
         } catch (UnknownHostException exception) {
             String message = "No network connection available.";
@@ -102,7 +106,7 @@ abstract class AsyncYoutube extends AsyncTask<Void, String, YouTubeResult> {
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
         if (!values[0].equals("")) {
-            Toast.makeText(getAppContext(), values[0], Toast.LENGTH_LONG).show();
+            Toast.makeText(getAppContext(), values[0], Toast.LENGTH_SHORT).show();
         }
         result.setCanceled(true);
     }

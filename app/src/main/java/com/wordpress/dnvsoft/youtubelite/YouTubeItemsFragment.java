@@ -17,20 +17,19 @@ import com.wordpress.dnvsoft.youtubelite.adapters.YouTubeItemAdapter;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
-import com.wordpress.dnvsoft.youtubelite.network.Network;
 
 import java.util.ArrayList;
 
 public abstract class YouTubeItemsFragment extends Fragment {
 
-    LinearLayout footer;
-    Button buttonLoadMore;
+    private LinearLayout footer;
+    private Button buttonLoadMore;
+    private TextView textView;
     YouTubeItemAdapter<YouTubeItem> adapter;
     String nextPageToken;
     ArrayList<YouTubeItem> youTubeItems = new ArrayList<>();
-    String playlistId;
     boolean haveContent;
-    private boolean hasPaused;
+    boolean responseHasReceived;
 
     public YouTubeItemsFragment() {
     }
@@ -59,14 +58,9 @@ public abstract class YouTubeItemsFragment extends Fragment {
 
         ListView listView = view.findViewById(R.id.listViewItem);
 
+        textView = view.findViewById(R.id.textViewContentInfo);
         footer = (LinearLayout) inflater.inflate(R.layout.footer_main, listView, false);
         buttonLoadMore = footer.findViewById(R.id.buttonFooterMain);
-        if (Network.IsDeviceOnline(getActivity())) {
-            footer.setVisibility(View.GONE);
-        } else {
-            footer.setVisibility(View.VISIBLE);
-            buttonLoadMore.setText(R.string.refresh);
-        }
         listView.addFooterView(footer, null, false);
 
         buttonLoadMore.setOnClickListener(buttonLoadMoreOnClickListener);
@@ -75,10 +69,7 @@ public abstract class YouTubeItemsFragment extends Fragment {
         adapter = new YouTubeItemAdapter<>(getContext(), youTubeItems);
         listView.setAdapter(adapter);
 
-        if (playlistId != null) {
-            footer.setVisibility(View.GONE);
-        }
-
+        updateViewFooter();
         adapter.notifyDataSetChanged();
 
         return view;
@@ -103,19 +94,22 @@ public abstract class YouTubeItemsFragment extends Fragment {
 
     abstract void onVideoClick(int position);
 
-    void updateViewContentInfo(String textViewString) {
-        TextView textView = getView().findViewById(R.id.textViewContentInfo);
-        if (youTubeItems.size() == 0 && !haveContent && hasPaused) {
+    void updateViewContentInfo() {
+        if (!haveContent && responseHasReceived) {
             textView.setVisibility(View.VISIBLE);
-            textView.setText(textViewString);
+            textView.setText(getContentString());
         } else {
             textView.setVisibility(View.GONE);
         }
     }
 
     void updateViewFooter() {
-        if (youTubeItems.size() > 0 && youTubeItems.size() % 20 == 0 && nextPageToken != null) {
+        if (!haveContent && responseHasReceived) {
             footer.setVisibility(View.VISIBLE);
+            buttonLoadMore.setText(R.string.refresh);
+        } else if (haveContent && youTubeItems.size() % 20 == 0 && nextPageToken != null) {
+            footer.setVisibility(View.VISIBLE);
+            buttonLoadMore.setText(R.string.load_more);
         } else {
             footer.setVisibility(View.GONE);
         }
@@ -125,28 +119,20 @@ public abstract class YouTubeItemsFragment extends Fragment {
         @Override
         public void onTaskComplete(YouTubeResult result) {
             if (!result.isCanceled() && result.getYouTubeVideos() != null) {
-                if (result.getYouTubeVideos().size() % 20 == 0) {
-                    footer.setVisibility(View.VISIBLE);
-                }
-
-                buttonLoadMore.setText(R.string.load_more);
                 nextPageToken = result.getNextPageToken();
                 youTubeItems.addAll(result.getYouTubeVideos());
                 adapter.notifyDataSetChanged();
             }
 
-            if (youTubeItems.size() != 0) {
+            responseHasReceived = true;
+            if (youTubeItems.size() > 0) {
                 haveContent = true;
-            } else {
-                TextView textView = getView().findViewById(R.id.textViewContentInfo);
-                textView.setVisibility(View.VISIBLE);
             }
+
+            updateViewContentInfo();
+            updateViewFooter();
         }
     };
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        hasPaused = true;
-    }
+    abstract String getContentString();
 }

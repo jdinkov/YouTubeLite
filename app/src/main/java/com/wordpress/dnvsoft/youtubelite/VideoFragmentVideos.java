@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class VideoFragmentVideos extends YouTubeItemsFragment {
 
     private String videoID;
+    private String playlistId;
 
     public static VideoFragmentVideos newInstance(
             ArrayList<YouTubeVideo> items, String playlistId, String videoID) {
@@ -39,6 +40,7 @@ public class VideoFragmentVideos extends YouTubeItemsFragment {
 
     @Override
     void onStateRestored() {
+        updateViewContentInfo();
         updateViewFooter();
     }
 
@@ -71,5 +73,10 @@ public class VideoFragmentVideos extends YouTubeItemsFragment {
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    @Override
+    String getContentString() {
+        return "This channel has no videos.";
     }
 }

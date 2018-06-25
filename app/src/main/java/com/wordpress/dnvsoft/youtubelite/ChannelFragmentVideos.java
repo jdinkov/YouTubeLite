@@ -29,7 +29,7 @@ public class ChannelFragmentVideos extends YouTubeItemsFragment {
 
     @Override
     void onStateRestored() {
-        updateViewContentInfo("This channel has no videos.");
+        updateViewContentInfo();
         updateViewFooter();
     }
 
@@ -66,5 +66,10 @@ public class ChannelFragmentVideos extends YouTubeItemsFragment {
         intent.putExtra("VIDEO_ID", youTubeItems.get(position).getId());
         intent.putExtra("VIDEO_TITLE", youTubeItems.get(position).getName());
         startActivity(intent);
+    }
+
+    @Override
+    String getContentString() {
+        return "This channel has no videos.";
     }
 }

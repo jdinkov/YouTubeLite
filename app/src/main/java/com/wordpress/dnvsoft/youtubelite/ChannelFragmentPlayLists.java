@@ -2,8 +2,6 @@ package com.wordpress.dnvsoft.youtubelite;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
-import android.widget.TextView;
 
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlayLists;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
@@ -32,7 +30,7 @@ public class ChannelFragmentPlayLists extends YouTubeItemsFragment {
 
     @Override
     void onStateRestored() {
-        updateViewContentInfo("This channel has no playlists.");
+        updateViewContentInfo();
         updateViewFooter();
     }
 
@@ -44,22 +42,18 @@ public class ChannelFragmentPlayLists extends YouTubeItemsFragment {
                     @Override
                     public void onTaskComplete(YouTubeResult result) {
                         if (!result.isCanceled() && result.getYouTubePlayLists() != null) {
-                            if (result.getYouTubePlayLists().size() % 20 == 0) {
-                                footer.setVisibility(View.VISIBLE);
-                            }
-
                             nextPageToken = result.getNextPageToken();
                             youTubeItems.addAll(result.getYouTubePlayLists());
                             adapter.notifyDataSetChanged();
-                            buttonLoadMore.setText(R.string.load_more);
                         }
 
-                        if (youTubeItems.size() != 0) {
+                        responseHasReceived = true;
+                        if (youTubeItems.size() > 0) {
                             haveContent = true;
-                        } else {
-                            TextView textView = getView().findViewById(R.id.textViewContentInfo);
-                            textView.setVisibility(View.VISIBLE);
                         }
+
+                        updateViewContentInfo();
+                        updateViewFooter();
                     }
                 });
 
@@ -74,5 +68,10 @@ public class ChannelFragmentPlayLists extends YouTubeItemsFragment {
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    String getContentString() {
+        return "This channel has no playlists.";
     }
 }

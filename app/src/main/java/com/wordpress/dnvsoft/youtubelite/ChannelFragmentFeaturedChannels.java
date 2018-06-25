@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetChannelInfo;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetChannelSubscriptions;
@@ -54,7 +53,7 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
 
     @Override
     void onStateRestored() {
-        updateViewContentInfo("This channel doesn't feature any other channels.");
+        updateViewContentInfo();
         updateViewFooter();
     }
 
@@ -92,6 +91,7 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                     }
                     break;
                 }
+                updateViewContentInfo();
                 updateViewFooter();
                 adapter.notifyDataSetChanged();
             }
@@ -122,11 +122,13 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                             }
                         }
 
-                        if (featuredChannelIds.size() == 0) {
-                            TextView textView = getView().findViewById(R.id.textViewContentInfo);
-                            textView.setVisibility(View.VISIBLE);
-                            textView.setText(R.string.doesnt_feature_any_other_channels);
+                        responseHasReceived = true;
+                        if (featuredChannelIds.size() > 0) {
+                            haveContent = true;
                         }
+
+                        updateViewContentInfo();
+                        updateViewFooter();
                     }
                 }
         );
@@ -160,6 +162,11 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                             nextPageToken = result.getNextPageToken();
                             channelSubscriptions.addAll(result.getYouTubeChannels());
                         }
+
+                        responseHasReceived = true;
+                        if (channelSubscriptions.size() > 0) {
+                            haveContent = true;
+                        }
                     }
                 }
         );
@@ -175,5 +182,18 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
         intent.putExtra("CHANNEL_NAME", youTubeItems.get(position).getName());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    @Override
+    String getContentString() {
+        switch (spinnerPosition) {
+            case 0: {
+                return "This channel doesn't feature any other channels.";
+            }
+            case 1: {
+                return "This channel doesn't have public subscriptions.";
+            }
+        }
+        return "This channel doesn't feature any other channels.";
     }
 }

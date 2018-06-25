@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ChannelListResponse;
+import com.wordpress.dnvsoft.youtubelite.YoutubeInfo;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeChannel;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
@@ -22,11 +23,14 @@ public class AsyncGetChannelInfo extends AsyncYoutube {
     YouTubeResult DoItInBackground() throws IOException {
 
         YouTube.Channels.List channelList = youtube.channels().list("snippet,contentDetails");
+        channelList.setFields("items(id,snippet(title,description,thumbnails/medium/url),contentDetails/relatedPlaylists/uploads)");
         channelList.setId(channelId);
         if (channelId == null) {
             channelList.setMine(true);
         }
-        channelList.setFields("items(id,snippet(title,description,thumbnails/medium/url),contentDetails/relatedPlaylists/uploads)");
+        if (accountEmail == null) {
+            channelList.setKey(YoutubeInfo.DEVELOPER_KEY);
+        }
 
         ChannelListResponse response = channelList.execute();
         YouTubeChannel channel = new YouTubeChannel();

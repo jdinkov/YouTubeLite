@@ -186,6 +186,7 @@ public class VideoFragmentCommentReplies extends Fragment implements OnCommentAd
     @Override
     public void onFinishEdit() {
         youTubeComments.clear();
+        nextPageToken = null;
         getYouTubeCommentReplies().execute();
     }
 }

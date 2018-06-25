@@ -41,10 +41,12 @@ public class VideoFragmentComments extends Fragment implements OnCommentAddEditL
     private TextView textViewCommentCount;
     private OnCommentCountUpdate callback;
     private int spinnerPosition;
+    private Spinner spinner;
 
     @Override
     public void onFinishEdit() {
         commentThreads.clear();
+        nextPageTokenCommentThread = null;
         getCommentThreads(getCommentsOrder());
     }
 
@@ -111,7 +113,7 @@ public class VideoFragmentComments extends Fragment implements OnCommentAddEditL
         RelativeLayout header = (RelativeLayout) inflater.inflate(R.layout.header_fragment_comments, listViewComments, false);
         Button buttonAddComment = header.findViewById(R.id.buttonAddComment);
         textViewCommentCount = header.findViewById(R.id.textCommentCount);
-        Spinner spinner = header.findViewById(R.id.spinnerSortComments);
+        spinner = header.findViewById(R.id.spinnerSortComments);
         listViewComments.addHeaderView(header);
 
         footer = (LinearLayout) inflater.inflate(R.layout.footer_main, listViewComments, false);
@@ -247,6 +249,7 @@ public class VideoFragmentComments extends Fragment implements OnCommentAddEditL
                             buttonLoadMore.setText(R.string.load_more);
                             adapter.notifyDataSetChanged();
                             updateCommentCount();
+                            spinner.setSelection(spinnerPosition);
                         }
                     }
                 });

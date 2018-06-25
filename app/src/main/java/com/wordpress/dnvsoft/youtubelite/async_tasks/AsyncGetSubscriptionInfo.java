@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SubscriptionListResponse;
+import com.wordpress.dnvsoft.youtubelite.YoutubeInfo;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeChannel;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
@@ -25,6 +26,9 @@ public class AsyncGetSubscriptionInfo extends AsyncYoutube {
         subscriptionsList.setFields("items/id");
         subscriptionsList.setForChannelId(channelId);
         subscriptionsList.setMine(true);
+        if (accountEmail == null){
+            subscriptionsList.setKey(YoutubeInfo.DEVELOPER_KEY);
+        }
 
         SubscriptionListResponse response = subscriptionsList.execute();
         if (response.getItems().size() > 0) {
@@ -34,10 +38,5 @@ public class AsyncGetSubscriptionInfo extends AsyncYoutube {
         }
 
         return result;
-    }
-
-    @Override
-    protected void onPostExecute(YouTubeResult result) {
-        super.onPostExecute(result);
     }
 }

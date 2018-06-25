@@ -11,7 +11,6 @@ import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 public class ChannelFragmentPlayListItems extends YouTubeItemsFragment {
 
     private String playlistId;
-    private String nextPageToken;
 
     public ChannelFragmentPlayListItems() {
     }
@@ -32,7 +31,7 @@ public class ChannelFragmentPlayListItems extends YouTubeItemsFragment {
 
     @Override
     void onStateRestored() {
-        updateViewContentInfo("This playlist is empty.");
+        updateViewContentInfo();
         updateViewFooter();
     }
 
@@ -57,5 +56,10 @@ public class ChannelFragmentPlayListItems extends YouTubeItemsFragment {
         intent.putExtra("VIDEO_POSITION", position);
         intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(youTubeItems));
         startActivity(intent);
+    }
+
+    @Override
+    String getContentString() {
+        return "This playlist is empty.";
     }
 }

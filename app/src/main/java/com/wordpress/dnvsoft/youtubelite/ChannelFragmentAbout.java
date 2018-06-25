@@ -1,5 +1,7 @@
 package com.wordpress.dnvsoft.youtubelite;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,9 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncDeleteSubscription;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetChannelInfo;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetSubscriptionInfo;
+import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncInsertSubscription;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
@@ -63,7 +68,11 @@ public class ChannelFragmentAbout extends Fragment {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            if (!isSubscribed) {
+                insertSubscription();
+            } else {
+                deleteSubscriptionDialog();
+            }
         }
     };
 
@@ -102,6 +111,44 @@ public class ChannelFragmentAbout extends Fragment {
         subscriptionsInfo.execute();
     }
 
+    private void insertSubscription() {
+        AsyncInsertSubscription insertSubscription = new AsyncInsertSubscription(
+                getActivity(), channelId,
+                new TaskCompleted() {
+                    @Override
+                    public void onTaskComplete(YouTubeResult result) {
+                        if (!result.isCanceled() && result.getYouTubeChannel() != null) {
+                            isSubscribed = true;
+                            subscriptionId = result.getYouTubeChannel().getSubscriptionId();
+                            Toast.makeText(getActivity(), "Subscription added", Toast.LENGTH_SHORT).show();
+                            updateButtonSubscribe();
+                        }
+                    }
+                }
+        );
+
+        insertSubscription.execute();
+    }
+
+    private void deleteSubscription() {
+        AsyncDeleteSubscription deleteSubscription = new AsyncDeleteSubscription(
+                getActivity(), subscriptionId,
+                new TaskCompleted() {
+                    @Override
+                    public void onTaskComplete(YouTubeResult result) {
+                        if (!result.isCanceled()) {
+                            isSubscribed = false;
+                            subscriptionId = null;
+                            Toast.makeText(getActivity(), "Subscription removed", Toast.LENGTH_SHORT).show();
+                            updateButtonSubscribe();
+                        }
+                    }
+                }
+        );
+
+        deleteSubscription.execute();
+    }
+
     private void updateTextViewAbout() {
         TextView textViewAbout = getView().findViewById(R.id.textViewAbout);
         if (aboutString != null) {
@@ -120,5 +167,20 @@ public class ChannelFragmentAbout extends Fragment {
             buttonSubscribe.setText(R.string.subscribe);
             buttonSubscribe.setBackgroundColor(getResources().getColor(R.color.buttonSubscribeRed));
         }
+    }
+
+    private void deleteSubscriptionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Are you sure you want to unsubscribe from " + getActivity().getTitle() + "?");
+        builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteSubscription();
+            }
+        });
+
+        builder.setNegativeButton(R.string.negative_button, null);
+
+        builder.create().show();
     }
 }

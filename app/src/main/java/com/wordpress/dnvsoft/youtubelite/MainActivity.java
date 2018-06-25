@@ -209,13 +209,13 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-            getChannelId().execute();
         }
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            getChannelId().execute();
             updateSignInUI(account);
         } catch (ApiException e) {
             updateSignInUI(null);
