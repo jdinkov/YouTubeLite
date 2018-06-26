@@ -37,7 +37,7 @@ public class AsyncPlaylistThumbnail extends AsyncYoutube {
 
         YouTubeVideo item = new YouTubeVideo();
         ArrayList<YouTubeItem> items = new ArrayList<>();
-        item.setThumbnailMaxResUrl(maxResUrl);
+//        item.setItemCount(maxResUrl);
         items.add(item);
 
         result.setYouTubeItems(items);

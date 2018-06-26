@@ -6,4 +6,5 @@
     <color name="textColor">#FF747474</color>
     <color name="buttonSubscribeGrey">#FFD6D7D7</color>
     <color name="buttonSubscribeRed">#ff0202</color>
+    <color name="playlist_background">#c8000000</color>
 </resources>

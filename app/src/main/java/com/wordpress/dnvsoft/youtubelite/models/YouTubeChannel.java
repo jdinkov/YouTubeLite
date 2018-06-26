@@ -8,7 +8,7 @@ public class YouTubeChannel implements YouTubeItem {
     private String name;
     private String uploadsId;
     private String thumbnailURL;
-    private String thumbnailMaxResUrl;
+    private String itemCount;
     private String bannerUrl;
     private List<String> featuredChannelsUrls;
     private String description;
@@ -46,12 +46,12 @@ public class YouTubeChannel implements YouTubeItem {
         this.thumbnailURL = thumbnailURL;
     }
 
-    public String getThumbnailMaxResUrl() {
-        return thumbnailMaxResUrl;
+    public String getItemCount() {
+        return itemCount;
     }
 
-    public void setThumbnailMaxResUrl(String thumbnailMaxResUrl) {
-        this.thumbnailMaxResUrl = thumbnailMaxResUrl;
+    public void setItemCount(String itemCount) {
+        this.itemCount = itemCount;
     }
 
     public String getBannerUrl() {

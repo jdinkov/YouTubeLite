@@ -39,14 +39,17 @@ public class YouTubeItemAdapter<T extends YouTubeItem> extends ArrayAdapter<T> {
         TextView textView = convertView.findViewById(R.id.listViewTitlePlayListItems);
         YouTubeThumbnailView youTubeThumbnailView = convertView.findViewById(R.id.listViewThumbnailPlayListItems);
         ImageView imageView = convertView.findViewById(R.id.listViewImage);
+        TextView textViewItemCount = convertView.findViewById(R.id.listViewPlaylistItemCount);
 
         final YouTubeItem youTubeItem = objects.get(position);
         textView.setText(youTubeItem.getName());
         Picasso.with(context).load(youTubeItem.getThumbnailURL()).into(youTubeThumbnailView);
         if (youTubeItem instanceof YouTubePlayList) {
             imageView.setVisibility(View.VISIBLE);
+            textViewItemCount.setText(youTubeItem.getItemCount());
         } else {
             imageView.setVisibility(View.GONE);
+            textViewItemCount.setText("");
         }
 
         return convertView;

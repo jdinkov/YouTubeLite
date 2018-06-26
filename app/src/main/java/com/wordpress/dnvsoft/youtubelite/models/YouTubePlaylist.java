@@ -5,7 +5,7 @@ public class YouTubePlayList implements YouTubeItem {
     private String Id;
     private String name;
     private String thumbnailURL;
-    private String thumbnailMaxResUrl;
+    private String itemCount;
 
     public String getId() {
         return Id;
@@ -31,11 +31,11 @@ public class YouTubePlayList implements YouTubeItem {
         this.thumbnailURL = thumbnailURL;
     }
 
-    public String getThumbnailMaxResUrl() {
-        return thumbnailMaxResUrl;
+    public String getItemCount() {
+        return itemCount;
     }
 
-    public void setThumbnailMaxResUrl(String thumbnailMaxResUrl) {
-        this.thumbnailMaxResUrl = thumbnailMaxResUrl;
+    public void setItemCount(String itemCount) {
+        this.itemCount = itemCount;
     }
 }

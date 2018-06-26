@@ -5,7 +5,7 @@ public class YouTubeVideo implements YouTubeItem {
     private String Id;
     private String name;
     private String thumbnailURL;
-    private String thumbnailMaxResUrl;
+    private String itemCount;
     private String rating;
     private String description;
     private String viewCount;
@@ -46,12 +46,12 @@ public class YouTubeVideo implements YouTubeItem {
         this.rating = rating;
     }
 
-    public String getThumbnailMaxResUrl() {
-        return thumbnailMaxResUrl;
+    public String getItemCount() {
+        return itemCount;
     }
 
-    public void setThumbnailMaxResUrl(String thumbnailMaxResUrl) {
-        this.thumbnailMaxResUrl = thumbnailMaxResUrl;
+    public void setItemCount(String itemCount) {
+        this.itemCount = itemCount;
     }
 
     public String getDescription() {

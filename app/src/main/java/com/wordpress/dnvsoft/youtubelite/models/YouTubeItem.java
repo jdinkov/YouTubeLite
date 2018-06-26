@@ -4,7 +4,7 @@ public interface YouTubeItem {
     String Id = null;
     String name = null;
     String thumbnailURL = null;
-    String thumbnailMaxResUrl = null;
+    String itemCount = null;
 
     String getId();
 
@@ -18,7 +18,7 @@ public interface YouTubeItem {
 
     void setThumbnailURL(String thumbnailURL);
 
-    String getThumbnailMaxResUrl();
+    String getItemCount();
 
-    void setThumbnailMaxResUrl(String thumbnailMaxResUrl);
+    void setItemCount(String itemCount);
 }

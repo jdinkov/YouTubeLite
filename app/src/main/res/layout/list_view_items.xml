@@ -23,7 +23,18 @@
         android:layout_marginLeft="79dp"
         android:layout_marginStart="79dp"
         android:visibility="visible"
-        app:srcCompat="@color/common_google_signin_btn_text_light_default" />
+        app:srcCompat="@color/playlist_background" />
+
+    <TextView
+        android:id="@+id/listViewPlaylistItemCount"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="79dp"
+        android:layout_marginStart="79dp"
+        android:gravity="center_horizontal"
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/listViewTitlePlayListItems"

@@ -3,6 +3,7 @@ package com.wordpress.dnvsoft.youtubelite;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -28,10 +29,12 @@ import android.widget.Toast;
 import com.wordpress.dnvsoft.youtubelite.adapters.YouTubeItemAdapter;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetHomeScreenItems;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetItems;
+import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlaylistItemCount;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.menus.SortMenu;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeChannel;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubePlayList;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
 
@@ -48,6 +51,7 @@ public class HomeFragment extends Fragment {
     private LinearLayout footer;
     private ProgressBar progressBar;
     private YouTubeItemAdapter<YouTubeItem> youTubeItemAdapter;
+    private AsyncGetHomeScreenItems homeScreenItems;
 
     private enum TaskStatus {FINISHED, RUNNING}
 
@@ -80,7 +84,7 @@ public class HomeFragment extends Fragment {
         editText.setOnFocusChangeListener(onFocusChangeListener);
         editText.addTextChangedListener(textWatcher);
 
-        GetHomeScreenVideos();
+        getHomeScreenVideos();
 
         return view;
     }
@@ -89,9 +93,9 @@ public class HomeFragment extends Fragment {
         @Override
         public void onClick(View v) {
             if (hasChangedAtAll) {
-                GetYouTubeItems(getOrderFromPreferences());
+                getYouTubeItems(getOrderFromPreferences());
             } else {
-                GetHomeScreenVideos();
+                getHomeScreenVideos();
             }
         }
     };
@@ -117,7 +121,7 @@ public class HomeFragment extends Fragment {
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-                GetYouTubeItems(getOrderFromPreferences());
+                getYouTubeItems(getOrderFromPreferences());
                 hideKeyboard(v);
             }
             return false;
@@ -151,15 +155,15 @@ public class HomeFragment extends Fragment {
         }
     };
 
-    public void hideKeyboard(View view) {
+    private void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
-    private void GetHomeScreenVideos() {
-        AsyncGetHomeScreenItems getHomeScreenItems = new AsyncGetHomeScreenItems(
+    private void getHomeScreenVideos() {
+        homeScreenItems = new AsyncGetHomeScreenItems(
                 getActivity(), nextPageToken,
                 new TaskCompleted() {
                     @Override
@@ -172,7 +176,7 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
-        getHomeScreenItems.execute();
+        homeScreenItems.execute();
         updateView(TaskStatus.RUNNING);
     }
 
@@ -192,7 +196,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void GetYouTubeItems(String order) {
+    private void getYouTubeItems(String order) {
         setHasOptionsMenu(true);
 
         if (hasChanged) {
@@ -202,6 +206,10 @@ public class HomeFragment extends Fragment {
         hasChanged = false;
         hasChangedAtAll = true;
 
+        if (homeScreenItems.getStatus() == AsyncTask.Status.RUNNING) {
+            homeScreenItems.cancel(true);
+        }
+
         AsyncGetItems getItems = new AsyncGetItems(getActivity(),
                 searchParameter, order, nextPageToken,
                 new TaskCompleted() {
@@ -210,6 +218,7 @@ public class HomeFragment extends Fragment {
                         if (!result.isCanceled() && result.getYouTubeItems() != null) {
                             nextPageToken = result.getNextPageToken();
                             youTubeItems.addAll(result.getYouTubeItems());
+                            getPlaylistItemCount();
                             if (youTubeItems.size() == 0) {
                                 Toast.makeText(getActivity(), "No results found", Toast.LENGTH_LONG).show();
                             }
@@ -220,6 +229,46 @@ public class HomeFragment extends Fragment {
 
         getItems.execute();
         updateView(TaskStatus.RUNNING);
+    }
+
+    private ArrayList<String> getPlaylistIds() {
+        ArrayList<String> playlistIds = new ArrayList<>();
+        for (YouTubeItem item : youTubeItems) {
+            if (item instanceof YouTubePlayList) {
+                if (item.getItemCount() == null) {
+                    playlistIds.add(item.getId());
+                }
+            }
+        }
+
+        return playlistIds;
+    }
+
+    private void getPlaylistItemCount() {
+        ArrayList<String> playlistIds = getPlaylistIds();
+        if (!playlistIds.isEmpty()) {
+            AsyncGetPlaylistItemCount itemCount = new AsyncGetPlaylistItemCount(
+                    getActivity(), playlistIds,
+                    new TaskCompleted() {
+                        @Override
+                        public void onTaskComplete(YouTubeResult result) {
+                            if (!result.isCanceled() && result.getYouTubePlayLists() != null) {
+                                for (int i = 0; i < youTubeItems.size(); i++) {
+                                    for (YouTubePlayList playList : result.getYouTubePlayLists()) {
+                                        if (youTubeItems.get(i).getId().equals(playList.getId())) {
+                                            youTubeItems.get(i).setItemCount(playList.getItemCount());
+                                        }
+                                    }
+                                }
+
+                                youTubeItemAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+            );
+
+            itemCount.execute();
+        }
     }
 
     private String getOrderFromPreferences() {
@@ -244,7 +293,7 @@ public class HomeFragment extends Fragment {
                         public void OnOrderSelected(String order) {
                             youTubeItems.clear();
                             nextPageToken = null;
-                            GetYouTubeItems(order);
+                            getYouTubeItems(order);
                         }
                     });
             menu.SortItems();

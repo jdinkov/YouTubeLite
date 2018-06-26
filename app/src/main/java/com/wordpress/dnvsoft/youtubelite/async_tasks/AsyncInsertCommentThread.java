@@ -6,7 +6,6 @@ import com.google.api.services.youtube.model.Comment;
 import com.google.api.services.youtube.model.CommentSnippet;
 import com.google.api.services.youtube.model.CommentThread;
 import com.google.api.services.youtube.model.CommentThreadSnippet;
-import com.wordpress.dnvsoft.youtubelite.YoutubeInfo;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
 import java.io.IOException;
@@ -33,7 +32,6 @@ public class AsyncInsertCommentThread extends AsyncYoutube {
         comment.setSnippet(commentSnippet);
         commentThreadSnippet.setTopLevelComment(comment);
         commentThreadSnippet.setVideoId(videoId);
-//        commentThreadSnippet.setChannelId(YoutubeInfo.CHANNEL_ID);
         commentThread.setSnippet(commentThreadSnippet);
 
         youtube.commentThreads().insert("snippet", commentThread).execute();
