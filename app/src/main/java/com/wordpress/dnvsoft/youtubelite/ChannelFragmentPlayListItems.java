@@ -10,7 +10,7 @@ import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
 public class ChannelFragmentPlayListItems extends YouTubeItemsFragment {
 
-    private String playlistId;
+    String playlistId;
 
     public ChannelFragmentPlayListItems() {
     }
@@ -54,6 +54,7 @@ public class ChannelFragmentPlayListItems extends YouTubeItemsFragment {
         Intent intent = new Intent(getActivity(), VideoActivity.class);
         intent.putExtra("PLAYLIST_ID", playlistId);
         intent.putExtra("VIDEO_POSITION", position);
+        intent.putExtra("NEXT_PAGE_TOKEN", nextPageToken);
         intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(youTubeItems));
         startActivity(intent);
     }

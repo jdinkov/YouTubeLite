@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,18 +118,10 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                     public void onTaskComplete(YouTubeResult result) {
                         if (!result.isCanceled() && result.getYouTubeChannel() != null) {
                             featuredChannelIds.addAll(result.getYouTubeChannel().getFeaturedChannelsUrls());
-                            for (String item : featuredChannelIds) {
-                                getChannelInfo(item).execute();
-                            }
+                            getChannelInfo(featuredChannelIds).execute();
                         }
 
                         responseHasReceived = true;
-                        if (featuredChannelIds.size() > 0) {
-                            haveContent = true;
-                        }
-
-                        updateViewContentInfo();
-                        updateViewFooter();
                     }
                 }
         );
@@ -136,18 +129,22 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
         featuredChannels.execute();
     }
 
-    private AsyncGetChannelInfo getChannelInfo(String id) {
-        return new AsyncGetChannelInfo(getActivity(), id,
+    private AsyncGetChannelInfo getChannelInfo(ArrayList<String> channelIds) {
+        String channelId = TextUtils.join(",", channelIds);
+        return new AsyncGetChannelInfo(getActivity(), channelId,
                 new TaskCompleted() {
                     @Override
                     public void onTaskComplete(YouTubeResult result) {
-                        if (!result.isCanceled() && result.getYouTubeChannel() != null) {
-                            featuredChannels.add(result.getYouTubeChannel());
+                        if (!result.isCanceled() && result.getYouTubeChannels() != null) {
+                            featuredChannels.addAll(result.getYouTubeChannels());
                             if (spinnerPosition == 0) {
-                                youTubeItems.add(result.getYouTubeChannel());
+                                youTubeItems.addAll(result.getYouTubeChannels());
                             }
                             adapter.notifyDataSetChanged();
                         }
+
+                        updateViewContentInfo();
+                        updateViewFooter();
                     }
                 });
     }
@@ -164,9 +161,6 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                         }
 
                         responseHasReceived = true;
-                        if (channelSubscriptions.size() > 0) {
-                            haveContent = true;
-                        }
                     }
                 }
         );
@@ -176,7 +170,6 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
 
     @Override
     public void onVideoClick(int position) {
-        position--;
         Intent intent = new Intent(getActivity(), ChannelActivity.class);
         intent.putExtra("CHANNEL_ID", youTubeItems.get(position).getId());
         intent.putExtra("CHANNEL_NAME", youTubeItems.get(position).getName());

@@ -38,8 +38,8 @@ public class ChannelFragmentVideos extends YouTubeItemsFragment {
                 new TaskCompleted() {
                     @Override
                     public void onTaskComplete(YouTubeResult result) {
-                        if (!result.isCanceled()) {
-                            uploadsId = result.getYouTubeChannel().getUploadsId();
+                        if (!result.isCanceled() && result.getYouTubeChannels() != null) {
+                            uploadsId = result.getYouTubeChannels().get(0).getUploadsId();
                             getItemsFromYouTube();
                         }
                     }

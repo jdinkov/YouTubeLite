@@ -5,8 +5,7 @@ import android.content.Context;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.PlaylistListResponse;
 import com.wordpress.dnvsoft.youtubelite.YoutubeInfo;
-import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
-import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubePlayList;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
 import java.io.IOException;
@@ -35,12 +34,12 @@ public class AsyncPlaylistThumbnail extends AsyncYoutube {
         playlistListResponse = playList.execute();
         String maxResUrl = playlistListResponse.getItems().get(0).getSnippet().getThumbnails().getMaxres().getUrl();
 
-        YouTubeVideo item = new YouTubeVideo();
-        ArrayList<YouTubeItem> items = new ArrayList<>();
-//        item.setItemCount(maxResUrl);
+        YouTubePlayList item = new YouTubePlayList();
+        ArrayList<YouTubePlayList> items = new ArrayList<>();
+        item.setThumbnailURL(maxResUrl);
         items.add(item);
 
-        result.setYouTubeItems(items);
+        result.setYouTubePlayLists(items);
         return result;
     }
 }

@@ -3,6 +3,7 @@ package com.wordpress.dnvsoft.youtubelite;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlaylistItems;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetVideos;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItemJsonHelper;
@@ -17,11 +18,12 @@ public class VideoFragmentVideos extends YouTubeItemsFragment {
     private String playlistId;
 
     public static VideoFragmentVideos newInstance(
-            ArrayList<YouTubeVideo> items, String playlistId, String videoID) {
+            ArrayList<YouTubeVideo> items, String playlistId, String videoID, String nextPageToken) {
         VideoFragmentVideos videoFragmentVideos = new VideoFragmentVideos();
         Bundle bundle = new Bundle();
         bundle.putString("ITEMS", YouTubeItemJsonHelper.toJson(items));
         bundle.putString("PLAYLIST_ID", playlistId);
+        bundle.putString("NEXT_PAGE_TOKEN", nextPageToken);
         bundle.putString("VIDEO_ID", videoID);
         videoFragmentVideos.setArguments(bundle);
         return videoFragmentVideos;
@@ -32,6 +34,7 @@ public class VideoFragmentVideos extends YouTubeItemsFragment {
         youTubeItems.addAll(YouTubeItemJsonHelper.fromJson(getArguments().getString("ITEMS")));
         playlistId = getArguments().getString("PLAYLIST_ID");
         videoID = getArguments().getString("VIDEO_ID");
+        nextPageToken = getArguments().getString("NEXT_PAGE_TOKEN");
 
         if (youTubeItems.isEmpty()) {
             getItemsFromYouTube();
@@ -46,6 +49,14 @@ public class VideoFragmentVideos extends YouTubeItemsFragment {
 
     @Override
     void getItemsFromYouTube() {
+        if (playlistId == null) {
+            getRelatedVideos();
+        } else {
+            getPlaylistItems();
+        }
+    }
+
+    private void getRelatedVideos() {
         AsyncGetVideos getVideos = new AsyncGetVideos(getContext(), videoID, nextPageToken,
                 new TaskCompleted() {
                     @Override
@@ -57,6 +68,20 @@ public class VideoFragmentVideos extends YouTubeItemsFragment {
         getVideos.execute();
     }
 
+    private void getPlaylistItems() {
+        AsyncGetPlaylistItems playlistItems = new AsyncGetPlaylistItems(
+                getActivity(), playlistId, nextPageToken,
+                new TaskCompleted() {
+                    @Override
+                    public void onTaskComplete(YouTubeResult result) {
+                        asyncTaskCompleted.onTaskComplete(result);
+                    }
+                }
+        );
+
+        playlistItems.execute();
+    }
+
     @Override
     public void onVideoClick(int position) {
         Intent intent = new Intent(getActivity(), VideoActivity.class);
@@ -65,6 +90,7 @@ public class VideoFragmentVideos extends YouTubeItemsFragment {
 
             intent.putExtra("PLAYLIST_ID", playlistId);
             intent.putExtra("VIDEO_POSITION", videoPosition);
+            intent.putExtra("NEXT_PAGE_TOKEN", nextPageToken);
             intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(youTubeItems));
         } else {
             intent.putExtra("VIDEO_ID", youTubeItems.get(position).getId());

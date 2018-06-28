@@ -37,6 +37,7 @@ public class VideoActivity extends AppCompatActivity
     private String videoTitle;
     private int currentVideoTime;
     private String commentCount;
+    private String nextPageToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class VideoActivity extends AppCompatActivity
         if (videoPosition != Integer.MIN_VALUE) {
             items.addAll(YouTubeItemJsonHelper.fromJson(getIntent().getStringExtra("ITEMS")));
             playlistID = getIntent().getStringExtra("PLAYLIST_ID");
+            nextPageToken = getIntent().getStringExtra("NEXT_PAGE_TOKEN");
             videoID = items.get(videoPosition).getId();
             videoTitle = items.get(videoPosition).getName();
         } else {
@@ -214,7 +216,7 @@ public class VideoActivity extends AppCompatActivity
         TabsAdapter(FragmentManager fm) {
             super(fm);
             fragmentDescription = VideoFragmentDescription.newInstance(videoID, videoTitle);
-            fragmentVideos = VideoFragmentVideos.newInstance(items, playlistID, videoID);
+            fragmentVideos = VideoFragmentVideos.newInstance(items, playlistID, videoID, nextPageToken);
             fragmentRootComments = VideoFragmentRootComments.newInstance(videoID);
         }
 

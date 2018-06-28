@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -45,7 +46,6 @@ public class HomeFragment extends Fragment {
     private boolean hasChanged;
     private boolean hasChangedAtAll;
     private String searchParameter = "";
-    private EditText editText;
     private ArrayList<YouTubeItem> youTubeItems = new ArrayList<>();
     private String nextPageToken;
     private LinearLayout footer;
@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         ListView listView = view.findViewById(R.id.listViewHome);
-        editText = view.findViewById(R.id.searchText);
+        EditText editText = view.findViewById(R.id.searchText);
         ImageView imageViewSearch = view.findViewById(R.id.searchButton);
         progressBar = view.findViewById(R.id.progressBarHome);
 
@@ -84,7 +84,12 @@ public class HomeFragment extends Fragment {
         editText.setOnFocusChangeListener(onFocusChangeListener);
         editText.addTextChangedListener(textWatcher);
 
-        getHomeScreenVideos();
+        hasChanged = false;
+        if (youTubeItems.isEmpty()) {
+            getHomeScreenVideos();
+        }
+
+        updateView(TaskStatus.FINISHED);
 
         return view;
     }
@@ -113,6 +118,13 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("CHANNEL_ID", youTubeItems.get(position).getId());
                 intent.putExtra("CHANNEL_NAME", youTubeItems.get(position).getName());
                 startActivity(intent);
+            } else if (youTubeItems.get(position) instanceof YouTubePlayList) {
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container,
+                        PlayListItemsFragment.newInstance(youTubeItems.get(position)));
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         }
     };
@@ -141,8 +153,10 @@ public class HomeFragment extends Fragment {
 
         @Override
         public void afterTextChanged(Editable s) {
-            hasChanged = true;
-            searchParameter = editText.getText().toString();
+            if (!searchParameter.equals(s.toString())) {
+                hasChanged = true;
+                searchParameter = s.toString();
+            }
         }
     };
 

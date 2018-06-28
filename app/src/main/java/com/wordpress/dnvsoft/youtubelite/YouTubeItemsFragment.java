@@ -25,10 +25,10 @@ public abstract class YouTubeItemsFragment extends Fragment {
     private LinearLayout footer;
     private Button buttonLoadMore;
     private TextView textView;
+    ListView listView;
     YouTubeItemAdapter<YouTubeItem> adapter;
     String nextPageToken;
     ArrayList<YouTubeItem> youTubeItems = new ArrayList<>();
-    boolean haveContent;
     boolean responseHasReceived;
 
     public YouTubeItemsFragment() {
@@ -56,7 +56,7 @@ public abstract class YouTubeItemsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_items, container, false);
 
-        ListView listView = view.findViewById(R.id.listViewItem);
+        listView = view.findViewById(R.id.listViewItem);
 
         textView = view.findViewById(R.id.textViewContentInfo);
         footer = (LinearLayout) inflater.inflate(R.layout.footer_main, listView, false);
@@ -95,7 +95,7 @@ public abstract class YouTubeItemsFragment extends Fragment {
     abstract void onVideoClick(int position);
 
     void updateViewContentInfo() {
-        if (!haveContent && responseHasReceived) {
+        if (youTubeItems.isEmpty() && responseHasReceived) {
             textView.setVisibility(View.VISIBLE);
             textView.setText(getContentString());
         } else {
@@ -104,10 +104,10 @@ public abstract class YouTubeItemsFragment extends Fragment {
     }
 
     void updateViewFooter() {
-        if (!haveContent && responseHasReceived) {
+        if (youTubeItems.isEmpty() && responseHasReceived) {
             footer.setVisibility(View.VISIBLE);
             buttonLoadMore.setText(R.string.refresh);
-        } else if (haveContent && youTubeItems.size() % 20 == 0 && nextPageToken != null) {
+        } else if (!youTubeItems.isEmpty() && youTubeItems.size() % 20 == 0 && nextPageToken != null) {
             footer.setVisibility(View.VISIBLE);
             buttonLoadMore.setText(R.string.load_more);
         } else {
@@ -125,9 +125,6 @@ public abstract class YouTubeItemsFragment extends Fragment {
             }
 
             responseHasReceived = true;
-            if (youTubeItems.size() > 0) {
-                haveContent = true;
-            }
 
             updateViewContentInfo();
             updateViewFooter();

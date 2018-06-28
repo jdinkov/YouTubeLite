@@ -227,10 +227,12 @@ public class MainActivity extends AppCompatActivity
                 new TaskCompleted() {
                     @Override
                     public void onTaskComplete(YouTubeResult result) {
-                        SharedPreferences.Editor editor =
-                                getSharedPreferences("CHANNEL_ID_PREFERENCES", MODE_PRIVATE).edit();
-                        editor.putString("CHANNEL_ID", result.getYouTubeChannel().getId());
-                        editor.apply();
+                        if (!result.isCanceled() && result.getYouTubeChannels() != null) {
+                            SharedPreferences.Editor editor =
+                                    getSharedPreferences("CHANNEL_ID_PREFERENCES", MODE_PRIVATE).edit();
+                            editor.putString("CHANNEL_ID", result.getYouTubeChannels().get(0).getId());
+                            editor.apply();
+                        }
                     }
                 });
     }

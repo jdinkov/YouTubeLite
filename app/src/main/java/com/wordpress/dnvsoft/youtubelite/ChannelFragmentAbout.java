@@ -82,8 +82,8 @@ public class ChannelFragmentAbout extends Fragment {
                 new TaskCompleted() {
                     @Override
                     public void onTaskComplete(YouTubeResult result) {
-                        if (!result.isCanceled() && result.getYouTubeChannel() != null) {
-                            aboutString = result.getYouTubeChannel().getDescription();
+                        if (!result.isCanceled() && result.getYouTubeChannels() != null) {
+                            aboutString = result.getYouTubeChannels().get(0).getDescription();
                             updateTextViewAbout();
                         }
                     }

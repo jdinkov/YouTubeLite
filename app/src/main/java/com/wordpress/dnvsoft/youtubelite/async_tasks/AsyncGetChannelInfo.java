@@ -9,6 +9,7 @@ import com.wordpress.dnvsoft.youtubelite.models.YouTubeChannel;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class AsyncGetChannelInfo extends AsyncYoutube {
 
@@ -33,16 +34,19 @@ public class AsyncGetChannelInfo extends AsyncYoutube {
         }
 
         ChannelListResponse response = channelList.execute();
-        YouTubeChannel channel = new YouTubeChannel();
-        if (response.getItems().size() > 0) {
-            channel.setId(response.getItems().get(0).getId());
-            channel.setName(response.getItems().get(0).getSnippet().getTitle());
-            channel.setThumbnailURL(response.getItems().get(0).getSnippet().getThumbnails().getMedium().getUrl());
-            channel.setUploadsId(response.getItems().get(0).getContentDetails().getRelatedPlaylists().getUploads());
-            channel.setDescription(response.getItems().get(0).getSnippet().getDescription());
-            result.setYouTubeChannel(channel);
+        int size = response.getItems().size();
+        ArrayList<YouTubeChannel> youTubeChannels = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            YouTubeChannel channel = new YouTubeChannel();
+            channel.setId(response.getItems().get(i).getId());
+            channel.setName(response.getItems().get(i).getSnippet().getTitle());
+            channel.setThumbnailURL(response.getItems().get(i).getSnippet().getThumbnails().getMedium().getUrl());
+            channel.setUploadsId(response.getItems().get(i).getContentDetails().getRelatedPlaylists().getUploads());
+            channel.setDescription(response.getItems().get(i).getSnippet().getDescription());
+            youTubeChannels.add(channel);
         }
 
+        result.setYouTubeChannels(youTubeChannels);
         return result;
     }
 }
