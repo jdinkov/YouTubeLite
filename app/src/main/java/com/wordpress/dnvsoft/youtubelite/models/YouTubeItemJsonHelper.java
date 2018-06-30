@@ -18,6 +18,7 @@ public class YouTubeItemJsonHelper implements Serializable {
                 item.put("id", youTubeItems.get(i).getId());
                 item.put("name", youTubeItems.get(i).getName());
                 item.put("thumbnailURL", youTubeItems.get(i).getThumbnailURL());
+                item.put("itemCount", youTubeItems.get(i).getItemCount());
                 jsonArray.put(i, item);
             }
             jsonObject.put("items", jsonArray);
@@ -28,20 +29,25 @@ public class YouTubeItemJsonHelper implements Serializable {
         return jsonObject.toString();
     }
 
-    public static ArrayList<YouTubeVideo> fromJson(String jsonString) {
-        ArrayList<YouTubeVideo> arrayList = new ArrayList<>();
+    public static <T extends YouTubeItem> ArrayList<T> fromJson(Class<T> c, String jsonString) {
+        ArrayList<T> arrayList = new ArrayList<>();
         try {
             JSONArray jsonArray = new JSONArray(new JSONObject(jsonString).getJSONArray("items").toString());
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject item = new JSONObject(jsonArray.getString(i));
-                YouTubeVideo tempCommentThread = new YouTubeVideo();
-                tempCommentThread.setId(item.getString("id"));
-                tempCommentThread.setName(item.getString("name"));
-                tempCommentThread.setThumbnailURL(item.getString("thumbnailURL"));
-                arrayList.add(tempCommentThread);
+                T youTubeItem = c.newInstance();
+                youTubeItem.setId(item.getString("id"));
+                youTubeItem.setName(item.getString("name"));
+                youTubeItem.setThumbnailURL(item.getString("thumbnailURL"));
+                youTubeItem.setItemCount(item.getString("itemCount"));
+                arrayList.add(youTubeItem);
             }
         } catch (JSONException e) {
             return arrayList;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
         }
 
         return arrayList;

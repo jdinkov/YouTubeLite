@@ -29,6 +29,9 @@ public class AsyncGetChannelSubscriptions extends AsyncYoutube {
         YouTube.Subscriptions.List subscriptionList = youtube.subscriptions().list("snippet ");
         subscriptionList.setFields("items(snippet(title,resourceId/channelId,thumbnails/medium/url))");
         subscriptionList.setChannelId(channelId);
+        if (channelId == null) {
+            subscriptionList.setMine(true);
+        }
         subscriptionList.setMaxResults(20L);
         subscriptionList.setPageToken(pageToken);
         if (accountEmail == null) {

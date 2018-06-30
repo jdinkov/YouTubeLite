@@ -42,5 +42,6 @@
     <string name="subscribe">Subscribe</string>
     <string name="this_channel_has_no_content">This channel has no content.</string>
     <string name="doesnt_feature_any_other_channels">This channel doesn\'t feature any other channels.</string>
+    <string name="subscriptions">Subscriptions</string>
 
 </resources>

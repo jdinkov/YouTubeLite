@@ -1,5 +1,6 @@
 package com.wordpress.dnvsoft.youtubelite;
 
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -28,6 +29,10 @@ public class ChannelActivity extends AppCompatActivity {
 
         channelId = getIntent().getStringExtra("CHANNEL_ID");
         String channelName = getIntent().getStringExtra("CHANNEL_NAME");
+
+        SharedPreferences.Editor editor = getSharedPreferences("CHANNEL_FRAGMENT_PLAYLISTS", MODE_PRIVATE).edit();
+        editor.remove("PLAYLISTS");
+        editor.apply();
 
         setTitle(channelName);
 

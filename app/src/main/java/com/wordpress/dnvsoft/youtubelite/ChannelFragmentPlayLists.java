@@ -1,5 +1,7 @@
 package com.wordpress.dnvsoft.youtubelite;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
@@ -7,6 +9,7 @@ import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlayLists;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlaylistItemCount;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeItemJsonHelper;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubePlayList;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
@@ -30,7 +33,22 @@ public class ChannelFragmentPlayLists extends YouTubeItemsFragment {
     @Override
     public void onCreateYouTubeItemsFragment() {
         channelId = getArguments().getString("CHANNEL_ID");
-        getItemsFromYouTube();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        SharedPreferences preferences = getActivity().
+                getSharedPreferences("CHANNEL_FRAGMENT_PLAYLISTS", Context.MODE_PRIVATE);
+        String tempString = preferences.getString("PLAYLISTS", null);
+        if (tempString != null && youTubeItems.isEmpty()) {
+            youTubeItems.addAll(YouTubeItemJsonHelper.fromJson(YouTubePlayList.class, tempString));
+            updateViewContentInfo();
+            updateViewFooter();
+        } else {
+            getItemsFromYouTube();
+        }
     }
 
     @Override
@@ -116,5 +134,15 @@ public class ChannelFragmentPlayLists extends YouTubeItemsFragment {
     @Override
     String getContentString() {
         return "This channel has no playlists.";
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        SharedPreferences.Editor editor = getActivity().
+                getSharedPreferences("CHANNEL_FRAGMENT_PLAYLISTS", Context.MODE_PRIVATE).edit();
+        editor.putString("PLAYLISTS", YouTubeItemJsonHelper.toJson(youTubeItems));
+        editor.apply();
     }
 }

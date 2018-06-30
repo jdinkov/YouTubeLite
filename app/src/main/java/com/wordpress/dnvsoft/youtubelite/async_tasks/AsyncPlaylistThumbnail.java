@@ -22,17 +22,21 @@ public class AsyncPlaylistThumbnail extends AsyncYoutube {
 
     @Override
     YouTubeResult DoItInBackground() throws IOException {
-        PlaylistListResponse playlistListResponse;
 
         YouTube.Playlists.List playList = youtube.playlists().list("snippet");
         playList.setId(PlaylistID);
-        playList.setFields("items/snippet/thumbnails/maxres/url");
+        playList.setFields("items/snippet/thumbnails(medium/url,maxres/url)");
         if (accountEmail == null) {
             playList.setKey(YoutubeInfo.DEVELOPER_KEY);
         }
 
-        playlistListResponse = playList.execute();
-        String maxResUrl = playlistListResponse.getItems().get(0).getSnippet().getThumbnails().getMaxres().getUrl();
+        PlaylistListResponse playlistListResponse = playList.execute();
+        String maxResUrl;
+        if (playlistListResponse.getItems().get(0).getSnippet().getThumbnails().getMaxres() != null) {
+            maxResUrl = playlistListResponse.getItems().get(0).getSnippet().getThumbnails().getMaxres().getUrl();
+        } else {
+            maxResUrl = playlistListResponse.getItems().get(0).getSnippet().getThumbnails().getMedium().getUrl();
+        }
 
         YouTubePlayList item = new YouTubePlayList();
         ArrayList<YouTubePlayList> items = new ArrayList<>();

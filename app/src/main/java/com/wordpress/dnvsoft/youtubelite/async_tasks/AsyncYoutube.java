@@ -38,6 +38,11 @@ abstract class AsyncYoutube extends AsyncTask<Void, String, YouTubeResult> {
     private static final int REQUEST_AUTHORIZATION = 1234;
 
     AsyncYoutube(Context c, TaskCompleted callback) {
+        if (c == null) {
+            cancel(true);
+            return;
+        }
+
         context = new WeakReference<>(c);
         this.callback = callback;
         result = new YouTubeResult();

@@ -164,10 +164,9 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
             fragment = new HomeFragment();
+        } else if (id == R.id.nav_subscriptions) {
+            fragment = new MySubscriptionsFragment();
         }
-//        else if (id == R.id.nav_search) {
-//
-//        }
 //          else if (id == R.id.nav_slideshow) {
 //
 //        } else if (id == R.id.nav_manage) {

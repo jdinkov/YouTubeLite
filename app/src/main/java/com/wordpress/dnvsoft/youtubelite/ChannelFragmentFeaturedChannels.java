@@ -105,6 +105,20 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
     };
 
     @Override
+    void onButtonLoadMoreClicked() {
+        switch (spinnerPosition) {
+            case 0: {
+                getFeaturedChannels();
+            }
+            break;
+            case 1: {
+                getChannelSubscriptions();
+            }
+            break;
+        }
+    }
+
+    @Override
     void getItemsFromYouTube() {
         getFeaturedChannels();
         getChannelSubscriptions();
@@ -122,6 +136,9 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                         }
 
                         responseHasReceived = true;
+
+                        updateViewContentInfo();
+                        updateViewFooter();
                     }
                 }
         );
@@ -142,9 +159,6 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                             }
                             adapter.notifyDataSetChanged();
                         }
-
-                        updateViewContentInfo();
-                        updateViewFooter();
                     }
                 });
     }
@@ -158,9 +172,16 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                         if (!result.isCanceled() && result.getYouTubeChannels() != null) {
                             nextPageToken = result.getNextPageToken();
                             channelSubscriptions.addAll(result.getYouTubeChannels());
+                            if (spinnerPosition == 1) {
+                                youTubeItems.addAll(result.getYouTubeChannels());
+                            }
+                            adapter.notifyDataSetChanged();
                         }
 
                         responseHasReceived = true;
+
+                        updateViewContentInfo();
+                        updateViewFooter();
                     }
                 }
         );
@@ -170,10 +191,10 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
 
     @Override
     public void onVideoClick(int position) {
+        position--;
         Intent intent = new Intent(getActivity(), ChannelActivity.class);
         intent.putExtra("CHANNEL_ID", youTubeItems.get(position).getId());
         intent.putExtra("CHANNEL_NAME", youTubeItems.get(position).getName());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

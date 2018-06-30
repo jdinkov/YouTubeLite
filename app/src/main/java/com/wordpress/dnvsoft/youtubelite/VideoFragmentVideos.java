@@ -31,7 +31,7 @@ public class VideoFragmentVideos extends YouTubeItemsFragment {
 
     @Override
     public void onCreateYouTubeItemsFragment() {
-        youTubeItems.addAll(YouTubeItemJsonHelper.fromJson(getArguments().getString("ITEMS")));
+        youTubeItems.addAll(YouTubeItemJsonHelper.fromJson(YouTubeVideo.class, getArguments().getString("ITEMS")));
         playlistId = getArguments().getString("PLAYLIST_ID");
         videoID = getArguments().getString("VIDEO_ID");
         nextPageToken = getArguments().getString("NEXT_PAGE_TOKEN");

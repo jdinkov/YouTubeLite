@@ -1,9 +1,9 @@
 package com.wordpress.dnvsoft.youtubelite.menus;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 
 import com.wordpress.dnvsoft.youtubelite.R;
 

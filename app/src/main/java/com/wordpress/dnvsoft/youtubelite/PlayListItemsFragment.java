@@ -1,5 +1,6 @@
 package com.wordpress.dnvsoft.youtubelite;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,13 +12,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlaylistItems;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncPlaylistThumbnail;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeItemJsonHelper;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
-public class PlayListItemsFragment extends ChannelFragmentPlayListItems {
+public class PlayListItemsFragment extends YouTubeItemsFragment {
 
+    String playlistId;
     private String playlistTitle;
     private ImageView imageViewPlaylistThumbnail;
 
@@ -35,9 +39,16 @@ public class PlayListItemsFragment extends ChannelFragmentPlayListItems {
 
     @Override
     public void onCreateYouTubeItemsFragment() {
-        super.onCreateYouTubeItemsFragment();
+        playlistId = getArguments().getString("PLAYLIST_ID");
         playlistTitle = getArguments().getString("PLAYLIST_TITLE");
         getPlaylistMaxResThumbnail();
+        getItemsFromYouTube();
+    }
+
+    @Override
+    void onStateRestored() {
+        updateViewContentInfo();
+        updateViewFooter();
     }
 
     @Nullable
@@ -55,6 +66,20 @@ public class PlayListItemsFragment extends ChannelFragmentPlayListItems {
         listView.setOnItemClickListener(onItemClickListener);
 
         return view;
+    }
+
+    @Override
+    void getItemsFromYouTube() {
+        AsyncGetPlaylistItems getPlaylistItems = new AsyncGetPlaylistItems(
+                getActivity(), playlistId, nextPageToken,
+                new TaskCompleted() {
+                    @Override
+                    public void onTaskComplete(YouTubeResult result) {
+                        asyncTaskCompleted.onTaskComplete(result);
+                    }
+                });
+
+        getPlaylistItems.execute();
     }
 
     private void getPlaylistMaxResThumbnail() {
@@ -76,6 +101,16 @@ public class PlayListItemsFragment extends ChannelFragmentPlayListItems {
     @Override
     public void onVideoClick(int position) {
         position--;
-        super.onVideoClick(position);
+        Intent intent = new Intent(getActivity(), VideoActivity.class);
+        intent.putExtra("PLAYLIST_ID", playlistId);
+        intent.putExtra("VIDEO_POSITION", position);
+        intent.putExtra("NEXT_PAGE_TOKEN", nextPageToken);
+        intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(youTubeItems));
+        startActivity(intent);
+    }
+
+    @Override
+    String getContentString() {
+        return "This playlist is empty.";
     }
 }

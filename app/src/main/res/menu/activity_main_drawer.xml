@@ -8,10 +8,10 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_home"
             android:title="@string/nav_home" />
-        <!--<item-->
-        <!--android:id="@+id/nav_search"-->
-        <!--android:icon="@drawable/ic_menu_search"-->
-        <!--android:name="Search" />-->
+        <item
+            android:id="@+id/nav_subscriptions"
+            android:icon="@drawable/ic_menu_subscriptions"
+            android:title="@string/subscriptions" />
         <!--<item-->
         <!--android:id="@+id/nav_gallery"-->
         <!--android:icon="@drawable/ic_menu_gallery"-->

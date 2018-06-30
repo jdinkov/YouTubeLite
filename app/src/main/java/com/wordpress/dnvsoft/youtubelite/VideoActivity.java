@@ -20,6 +20,7 @@ import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
 import com.wordpress.dnvsoft.youtubelite.views.LinearLayoutWithTouchListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class VideoActivity extends AppCompatActivity
         implements YouTubePlayer.OnInitializedListener,
@@ -38,6 +39,7 @@ public class VideoActivity extends AppCompatActivity
     private int currentVideoTime;
     private String commentCount;
     private String nextPageToken;
+    private long lastOnBackClickedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,7 @@ public class VideoActivity extends AppCompatActivity
 
         videoPosition = getIntent().getIntExtra("VIDEO_POSITION", Integer.MIN_VALUE);
         if (videoPosition != Integer.MIN_VALUE) {
-            items.addAll(YouTubeItemJsonHelper.fromJson(getIntent().getStringExtra("ITEMS")));
+            items.addAll(YouTubeItemJsonHelper.fromJson(YouTubeVideo.class, getIntent().getStringExtra("ITEMS")));
             playlistID = getIntent().getStringExtra("PLAYLIST_ID");
             nextPageToken = getIntent().getStringExtra("NEXT_PAGE_TOKEN");
             videoID = items.get(videoPosition).getId();
@@ -181,6 +183,17 @@ public class VideoActivity extends AppCompatActivity
             }
         }
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        long currentTime = Calendar.getInstance().getTime().getTime();
+        if (currentTime - lastOnBackClickedTime <= 300) {
+            super.onBackPressed();
+        } else {
+            lastOnBackClickedTime = currentTime;
+            Toast.makeText(VideoActivity.this, "Press one more time to return.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

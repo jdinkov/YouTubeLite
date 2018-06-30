@@ -79,9 +79,13 @@ public abstract class YouTubeItemsFragment extends Fragment {
         @Override
         public void onClick(View v) {
             footer.setVisibility(View.GONE);
-            getItemsFromYouTube();
+            onButtonLoadMoreClicked();
         }
     };
+
+    void onButtonLoadMoreClicked() {
+        getItemsFromYouTube();
+    }
 
     abstract void getItemsFromYouTube();
 
