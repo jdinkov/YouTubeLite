@@ -31,6 +31,7 @@ public class ChannelActivity extends AppCompatActivity {
         String channelName = getIntent().getStringExtra("CHANNEL_NAME");
 
         SharedPreferences.Editor editor = getSharedPreferences("CHANNEL_FRAGMENT_PLAYLISTS", MODE_PRIVATE).edit();
+        editor.remove("PLAYLISTS_PAGE_TOKEN");
         editor.remove("PLAYLISTS");
         editor.apply();
 

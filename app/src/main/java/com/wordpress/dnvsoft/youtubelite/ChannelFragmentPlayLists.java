@@ -41,20 +41,15 @@ public class ChannelFragmentPlayLists extends YouTubeItemsFragment {
 
         SharedPreferences preferences = getActivity().
                 getSharedPreferences("CHANNEL_FRAGMENT_PLAYLISTS", Context.MODE_PRIVATE);
+        nextPageToken = preferences.getString("PLAYLISTS_PAGE_TOKEN", null);
         String tempString = preferences.getString("PLAYLISTS", null);
         if (tempString != null && youTubeItems.isEmpty()) {
             youTubeItems.addAll(YouTubeItemJsonHelper.fromJson(YouTubePlayList.class, tempString));
             updateViewContentInfo();
-            updateViewFooter();
-        } else {
+            updateViewFooter(YouTubeRequest.RECEIVED);
+        } else if (youTubeItems.isEmpty()) {
             getItemsFromYouTube();
         }
-    }
-
-    @Override
-    void onStateRestored() {
-        updateViewContentInfo();
-        updateViewFooter();
     }
 
     @Override
@@ -74,7 +69,7 @@ public class ChannelFragmentPlayLists extends YouTubeItemsFragment {
                         responseHasReceived = true;
 
                         updateViewContentInfo();
-                        updateViewFooter();
+                        updateViewFooter(YouTubeRequest.RECEIVED);
                     }
                 });
 
@@ -142,6 +137,7 @@ public class ChannelFragmentPlayLists extends YouTubeItemsFragment {
 
         SharedPreferences.Editor editor = getActivity().
                 getSharedPreferences("CHANNEL_FRAGMENT_PLAYLISTS", Context.MODE_PRIVATE).edit();
+        editor.putString("PLAYLISTS_PAGE_TOKEN", nextPageToken);
         editor.putString("PLAYLISTS", YouTubeItemJsonHelper.toJson(youTubeItems));
         editor.apply();
     }

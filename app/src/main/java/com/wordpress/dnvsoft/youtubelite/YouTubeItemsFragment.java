@@ -31,6 +31,8 @@ public abstract class YouTubeItemsFragment extends Fragment {
     ArrayList<YouTubeItem> youTubeItems = new ArrayList<>();
     boolean responseHasReceived;
 
+    enum YouTubeRequest {NOT_SEND, RECEIVED, RECEIVED_EMPTY}
+
     public YouTubeItemsFragment() {
     }
 
@@ -46,10 +48,14 @@ public abstract class YouTubeItemsFragment extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        onStateRestored();
-    }
 
-    abstract void onStateRestored();
+        updateViewContentInfo();
+        if (responseHasReceived) {
+            updateViewFooter(YouTubeRequest.RECEIVED);
+        } else {
+            updateViewFooter(YouTubeRequest.NOT_SEND);
+        }
+    }
 
     @Nullable
     @Override
@@ -69,7 +75,7 @@ public abstract class YouTubeItemsFragment extends Fragment {
         adapter = new YouTubeItemAdapter<>(getContext(), youTubeItems);
         listView.setAdapter(adapter);
 
-        updateViewFooter();
+        updateViewFooter(YouTubeRequest.NOT_SEND);
         adapter.notifyDataSetChanged();
 
         return view;
@@ -107,15 +113,21 @@ public abstract class YouTubeItemsFragment extends Fragment {
         }
     }
 
-    void updateViewFooter() {
-        if (youTubeItems.isEmpty() && responseHasReceived) {
-            footer.setVisibility(View.VISIBLE);
-            buttonLoadMore.setText(R.string.refresh);
-        } else if (!youTubeItems.isEmpty() && youTubeItems.size() % 20 == 0 && nextPageToken != null) {
-            footer.setVisibility(View.VISIBLE);
-            buttonLoadMore.setText(R.string.load_more);
+    void updateViewFooter(YouTubeRequest request) {
+        if (youTubeItems.size() != 0) {
+            if (youTubeItems.size() % 20 == 0 && nextPageToken != null) {
+                footer.setVisibility(View.VISIBLE);
+                buttonLoadMore.setText(R.string.load_more);
+            } else {
+                footer.setVisibility(View.GONE);
+            }
         } else {
-            footer.setVisibility(View.GONE);
+            if (request == YouTubeRequest.NOT_SEND || request == YouTubeRequest.RECEIVED_EMPTY) {
+                footer.setVisibility(View.GONE);
+            } else if (request == YouTubeRequest.RECEIVED) {
+                footer.setVisibility(View.VISIBLE);
+                buttonLoadMore.setText(R.string.refresh);
+            }
         }
     }
 
@@ -131,7 +143,7 @@ public abstract class YouTubeItemsFragment extends Fragment {
             responseHasReceived = true;
 
             updateViewContentInfo();
-            updateViewFooter();
+            updateViewFooter(YouTubeRequest.RECEIVED);
         }
     };
 

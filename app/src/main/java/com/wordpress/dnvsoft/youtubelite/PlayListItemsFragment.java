@@ -45,12 +45,6 @@ public class PlayListItemsFragment extends YouTubeItemsFragment {
         getItemsFromYouTube();
     }
 
-    @Override
-    void onStateRestored() {
-        updateViewContentInfo();
-        updateViewFooter();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

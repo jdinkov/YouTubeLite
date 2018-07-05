@@ -27,12 +27,6 @@ public class ChannelFragmentVideos extends YouTubeItemsFragment {
         getChannelUploadsId().execute();
     }
 
-    @Override
-    void onStateRestored() {
-        updateViewContentInfo();
-        updateViewFooter();
-    }
-
     private AsyncGetChannelInfo getChannelUploadsId() {
         return new AsyncGetChannelInfo(getActivity(), channelId,
                 new TaskCompleted() {

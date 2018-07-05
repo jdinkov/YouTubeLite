@@ -17,12 +17,6 @@ public class MySubscriptionsFragment extends YouTubeItemsFragment {
     }
 
     @Override
-    void onStateRestored() {
-        updateViewContentInfo();
-        updateViewFooter();
-    }
-
-    @Override
     void getItemsFromYouTube() {
         AsyncGetChannelSubscriptions channelSubscriptions = new AsyncGetChannelSubscriptions(
                 getActivity(), null, nextPageToken,
@@ -38,7 +32,7 @@ public class MySubscriptionsFragment extends YouTubeItemsFragment {
                         responseHasReceived = true;
 
                         updateViewContentInfo();
-                        updateViewFooter();
+                        updateViewFooter(YouTubeRequest.RECEIVED);
                     }
                 }
         );

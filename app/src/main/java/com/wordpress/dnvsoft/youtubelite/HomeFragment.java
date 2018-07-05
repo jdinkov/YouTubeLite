@@ -49,6 +49,7 @@ public class HomeFragment extends Fragment {
     private ArrayList<YouTubeItem> youTubeItems = new ArrayList<>();
     private String nextPageToken;
     private LinearLayout footer;
+    private Button buttonLoadMore;
     private ProgressBar progressBar;
     private YouTubeItemAdapter<YouTubeItem> youTubeItemAdapter;
     private AsyncGetHomeScreenItems homeScreenItems;
@@ -68,7 +69,7 @@ public class HomeFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBarHome);
 
         footer = (LinearLayout) inflater.inflate(R.layout.footer_main, listView, false);
-        Button buttonLoadMore = footer.findViewById(R.id.buttonFooterMain);
+        buttonLoadMore = footer.findViewById(R.id.buttonFooterMain);
         footer.setVisibility(View.GONE);
         listView.addFooterView(footer, null, false);
 
@@ -87,9 +88,9 @@ public class HomeFragment extends Fragment {
         hasChanged = false;
         if (youTubeItems.isEmpty()) {
             getHomeScreenVideos();
+        } else {
+            updateView(TaskStatus.FINISHED);
         }
-
-        updateView(TaskStatus.FINISHED);
 
         return view;
     }
@@ -199,11 +200,16 @@ public class HomeFragment extends Fragment {
             progressBar.setVisibility(View.VISIBLE);
             footer.setVisibility(View.GONE);
         } else if (taskStatus == TaskStatus.FINISHED) {
-            if (youTubeItems.size() != 0 && youTubeItems.size() % 20 == 0) {
+            if (youTubeItems.size() != 0) {
+                if (youTubeItems.size() % 20 == 0 && nextPageToken != null) {
+                    footer.setVisibility(View.VISIBLE);
+                    buttonLoadMore.setText(R.string.load_more);
+                } else {
+                    footer.setVisibility(View.GONE);
+                }
+            } else {
                 footer.setVisibility(View.VISIBLE);
-            }
-            if (nextPageToken == null) {
-                footer.setVisibility(View.GONE);
+                buttonLoadMore.setText(R.string.refresh);
             }
             youTubeItemAdapter.notifyDataSetChanged();
             progressBar.setVisibility(View.GONE);

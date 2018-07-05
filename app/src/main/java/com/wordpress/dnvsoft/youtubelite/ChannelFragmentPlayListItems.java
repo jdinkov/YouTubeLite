@@ -30,12 +30,6 @@ public class ChannelFragmentPlayListItems extends YouTubeItemsFragment {
     }
 
     @Override
-    void onStateRestored() {
-        updateViewContentInfo();
-        updateViewFooter();
-    }
-
-    @Override
     void getItemsFromYouTube() {
         AsyncGetPlaylistItems getPlaylistItems = new AsyncGetPlaylistItems(
                 getActivity(), playlistId, nextPageToken,

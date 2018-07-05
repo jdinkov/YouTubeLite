@@ -40,6 +40,7 @@ public class VideoActivity extends AppCompatActivity
     private String commentCount;
     private String nextPageToken;
     private long lastOnBackClickedTime;
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,11 +189,15 @@ public class VideoActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         long currentTime = Calendar.getInstance().getTime().getTime();
-        if (currentTime - lastOnBackClickedTime <= 300) {
+        if (currentTime - lastOnBackClickedTime <= 2000) {
+            if (toast != null) {
+                toast.cancel();
+            }
             super.onBackPressed();
         } else {
             lastOnBackClickedTime = currentTime;
-            Toast.makeText(VideoActivity.this, "Press one more time to return.", Toast.LENGTH_SHORT).show();
+            toast = Toast.makeText(VideoActivity.this, "Press one more time to return.", Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 

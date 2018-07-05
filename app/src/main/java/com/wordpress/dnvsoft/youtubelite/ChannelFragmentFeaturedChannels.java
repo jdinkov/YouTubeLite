@@ -52,12 +52,6 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
         getItemsFromYouTube();
     }
 
-    @Override
-    void onStateRestored() {
-        updateViewContentInfo();
-        updateViewFooter();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -93,7 +87,7 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                     break;
                 }
                 updateViewContentInfo();
-                updateViewFooter();
+                updateViewFooter(YouTubeRequest.NOT_SEND);
                 adapter.notifyDataSetChanged();
             }
         }
@@ -136,9 +130,6 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                         }
 
                         responseHasReceived = true;
-
-                        updateViewContentInfo();
-                        updateViewFooter();
                     }
                 }
         );
@@ -158,6 +149,11 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                                 youTubeItems.addAll(result.getYouTubeChannels());
                             }
                             adapter.notifyDataSetChanged();
+                        }
+
+                        updateViewContentInfo();
+                        if (result.getYouTubeChannels() != null) {
+                            updateViewFooter(YouTubeRequest.RECEIVED_EMPTY);
                         }
                     }
                 });
@@ -181,7 +177,9 @@ public class ChannelFragmentFeaturedChannels extends YouTubeItemsFragment {
                         responseHasReceived = true;
 
                         updateViewContentInfo();
-                        updateViewFooter();
+                        if (result.getYouTubeChannels() != null) {
+                            updateViewFooter(YouTubeRequest.RECEIVED_EMPTY);
+                        }
                     }
                 }
         );
