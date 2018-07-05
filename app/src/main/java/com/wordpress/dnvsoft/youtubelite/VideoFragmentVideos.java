@@ -80,10 +80,8 @@ public class VideoFragmentVideos extends YouTubeItemsFragment {
     public void onVideoClick(int position) {
         Intent intent = new Intent(getActivity(), VideoActivity.class);
         if (playlistId != null) {
-            int videoPosition = youTubeItems.size() - position - 1;
-
             intent.putExtra("PLAYLIST_ID", playlistId);
-            intent.putExtra("VIDEO_POSITION", videoPosition);
+            intent.putExtra("VIDEO_POSITION", position);
             intent.putExtra("NEXT_PAGE_TOKEN", nextPageToken);
             intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(youTubeItems));
         } else {

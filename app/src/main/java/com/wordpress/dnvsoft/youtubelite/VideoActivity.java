@@ -188,16 +188,20 @@ public class VideoActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        long currentTime = Calendar.getInstance().getTime().getTime();
-        if (currentTime - lastOnBackClickedTime <= 2000) {
-            if (toast != null) {
-                toast.cancel();
-            }
-            super.onBackPressed();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
         } else {
-            lastOnBackClickedTime = currentTime;
-            toast = Toast.makeText(VideoActivity.this, "Press one more time to return.", Toast.LENGTH_SHORT);
-            toast.show();
+            long currentTime = Calendar.getInstance().getTime().getTime();
+            if (currentTime - lastOnBackClickedTime <= 2000) {
+                if (toast != null) {
+                    toast.cancel();
+                }
+                super.onBackPressed();
+            } else {
+                lastOnBackClickedTime = currentTime;
+                toast = Toast.makeText(VideoActivity.this, "Press one more time to return.", Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
     }
 
