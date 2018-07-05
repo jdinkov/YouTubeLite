@@ -55,7 +55,7 @@ public class PlayListItemsFragment extends YouTubeItemsFragment {
         TextView textViewPlaylistTitle = header.findViewById(R.id.playListItemsTitle);
         textViewPlaylistTitle.setText(playlistTitle);
 
-        listView.addHeaderView(header);
+        listView.addHeaderView(header, null, false);
 
         listView.setOnItemClickListener(onItemClickListener);
 
