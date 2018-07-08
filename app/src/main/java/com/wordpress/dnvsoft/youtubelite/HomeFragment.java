@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import com.wordpress.dnvsoft.youtubelite.adapters.YouTubeItemAdapter;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetHomeScreenItems;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetItems;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlaylistItemCount;
+import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetVideoDuration;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.menus.SortMenu;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeChannel;
@@ -186,6 +188,7 @@ public class HomeFragment extends Fragment {
                         if (!result.isCanceled() && result.getYouTubeVideos() != null) {
                             nextPageToken = result.getNextPageToken();
                             youTubeItems.addAll(result.getYouTubeVideos());
+                            getVideoDuration();
                         }
                         updateView(TaskStatus.FINISHED);
                     }
@@ -239,6 +242,7 @@ public class HomeFragment extends Fragment {
                             nextPageToken = result.getNextPageToken();
                             youTubeItems.addAll(result.getYouTubeItems());
                             getPlaylistItemCount();
+                            getVideoDuration();
                             if (youTubeItems.size() == 0) {
                                 Toast.makeText(getActivity(), "No results found", Toast.LENGTH_LONG).show();
                             }
@@ -289,6 +293,40 @@ public class HomeFragment extends Fragment {
 
             itemCount.execute();
         }
+    }
+
+    private String getVideosWithEmptyDuration() {
+        ArrayList<String> videoIds = new ArrayList<>();
+        for (YouTubeItem item : youTubeItems) {
+            if (item instanceof YouTubeVideo && ((YouTubeVideo) item).getDuration() == null) {
+                videoIds.add(item.getId());
+            }
+        }
+
+        return TextUtils.join(",", videoIds);
+    }
+
+    private void getVideoDuration() {
+        AsyncGetVideoDuration videoDuration = new AsyncGetVideoDuration(
+                getActivity(), getVideosWithEmptyDuration(),
+                new TaskCompleted() {
+                    @Override
+                    public void onTaskComplete(YouTubeResult result) {
+                        if (!result.isCanceled() && result.getYouTubeVideos() != null) {
+                            for (int i = 0; i < youTubeItems.size(); i++) {
+                                for (YouTubeVideo video : result.getYouTubeVideos()) {
+                                    if (video.getId().equals(youTubeItems.get(i).getId())) {
+                                        ((YouTubeVideo) youTubeItems.get(i)).setDuration(video.getDuration());
+                                    }
+                                }
+                            }
+
+                            youTubeItemAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+
+        videoDuration.execute();
     }
 
     private String getOrderFromPreferences() {
