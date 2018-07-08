@@ -25,8 +25,8 @@ public class AsyncGetVideoDuration extends AsyncYoutube {
 
     @Override
     YouTubeResult DoItInBackground() throws IOException {
-        YouTube.Videos.List videoList = youtube.videos().list("contentDetails");
-        videoList.setFields("items(id,contentDetails/duration)");
+        YouTube.Videos.List videoList = youtube.videos().list("snippet,contentDetails");
+        videoList.setFields("items(id,snippet/channelTitle,contentDetails/duration)");
         videoList.setId(videoIds);
         if (accountEmail == null) {
             videoList.setKey(YoutubeInfo.DEVELOPER_KEY);
@@ -38,6 +38,7 @@ public class AsyncGetVideoDuration extends AsyncYoutube {
         for (int i = 0; i < size; i++) {
             YouTubeVideo video = new YouTubeVideo();
             video.setId(response.getItems().get(i).getId());
+            video.setChannelTitle(response.getItems().get(i).getSnippet().getChannelTitle());
             video.setDuration(getDuration(response.getItems().get(i).getContentDetails().getDuration()));
             youTubeVideos.add(video);
         }

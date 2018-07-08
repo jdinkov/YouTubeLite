@@ -6,6 +6,7 @@ public class YouTubePlayList implements YouTubeItem {
     private String name;
     private String thumbnailURL;
     private String itemCount;
+    private String channelTitle;
 
     public String getId() {
         return Id;
@@ -37,5 +38,13 @@ public class YouTubePlayList implements YouTubeItem {
 
     public void setItemCount(String itemCount) {
         this.itemCount = itemCount;
+    }
+
+    public String getChannelTitle() {
+        return channelTitle;
+    }
+
+    public void setChannelTitle(String channelTitle) {
+        this.channelTitle = channelTitle;
     }
 }

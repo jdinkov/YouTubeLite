@@ -281,6 +281,7 @@ public class HomeFragment extends Fragment {
                                     for (YouTubePlayList playList : result.getYouTubePlayLists()) {
                                         if (youTubeItems.get(i).getId().equals(playList.getId())) {
                                             youTubeItems.get(i).setItemCount(playList.getItemCount());
+                                            ((YouTubePlayList) youTubeItems.get(i)).setChannelTitle(playList.getChannelTitle());
                                         }
                                     }
                                 }
@@ -317,6 +318,7 @@ public class HomeFragment extends Fragment {
                                 for (YouTubeVideo video : result.getYouTubeVideos()) {
                                     if (video.getId().equals(youTubeItems.get(i).getId())) {
                                         ((YouTubeVideo) youTubeItems.get(i)).setDuration(video.getDuration());
+                                        ((YouTubeVideo) youTubeItems.get(i)).setChannelTitle(video.getChannelTitle());
                                     }
                                 }
                             }

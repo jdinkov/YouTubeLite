@@ -51,15 +51,33 @@
         android:textColor="@android:color/background_light"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/listViewTitlePlayListItems"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="72dp"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="5dp"
         android:layout_marginLeft="160dp"
         android:layout_marginRight="5dp"
-        android:layout_marginStart="160dp"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:layout_marginStart="160dp">
+
+        <TextView
+            android:id="@+id/listViewTitlePlayListItems"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            android:id="@+id/textViewChannelTitle"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:gravity="bottom"
+            android:textSize="12sp"
+            android:textStyle="italic" />
+    </RelativeLayout>
 
 </FrameLayout>

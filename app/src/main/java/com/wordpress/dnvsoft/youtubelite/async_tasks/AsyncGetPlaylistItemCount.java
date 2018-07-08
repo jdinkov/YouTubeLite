@@ -25,8 +25,8 @@ public class AsyncGetPlaylistItemCount extends AsyncYoutube {
     YouTubeResult DoItInBackground() throws IOException {
         ArrayList<YouTubePlayList> youTubePlayLists = new ArrayList<>();
 
-        YouTube.Playlists.List playlistList = youtube.playlists().list("contentDetails");
-        playlistList.setFields("items(id,contentDetails/itemCount)");
+        YouTube.Playlists.List playlistList = youtube.playlists().list("snippet,contentDetails");
+        playlistList.setFields("items(id,snippet/channelTitle,contentDetails/itemCount)");
         playlistList.setId(TextUtils.join(",", playlistIds));
         if (accountEmail == null) {
             playlistList.setKey(YoutubeInfo.DEVELOPER_KEY);
@@ -37,6 +37,7 @@ public class AsyncGetPlaylistItemCount extends AsyncYoutube {
         for (int i = 0; i < size; i++) {
             YouTubePlayList playList = new YouTubePlayList();
             playList.setId(response.getItems().get(i).getId());
+            playList.setChannelTitle(response.getItems().get(i).getSnippet().getChannelTitle());
             playList.setItemCount(response.getItems().get(i).getContentDetails().getItemCount().toString());
             youTubePlayLists.add(playList);
         }

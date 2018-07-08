@@ -42,6 +42,7 @@ public class YouTubeItemAdapter<T extends YouTubeItem> extends ArrayAdapter<T> {
         ImageView imageView = convertView.findViewById(R.id.listViewImage);
         TextView textViewItemCount = convertView.findViewById(R.id.listViewPlaylistItemCount);
         TextView textViewVideoDuration = convertView.findViewById(R.id.textViewDuration);
+        TextView textViewChannelTitle = convertView.findViewById(R.id.textViewChannelTitle);
 
         final YouTubeItem youTubeItem = objects.get(position);
         textView.setText(youTubeItem.getName());
@@ -51,6 +52,7 @@ public class YouTubeItemAdapter<T extends YouTubeItem> extends ArrayAdapter<T> {
             textViewItemCount.setText(youTubeItem.getItemCount());
             textViewVideoDuration.setVisibility(View.GONE);
             textViewVideoDuration.setText("");
+            textViewChannelTitle.setText(((YouTubePlayList) youTubeItem).getChannelTitle());
         } else if (youTubeItem instanceof YouTubeVideo) {
             String duration = ((YouTubeVideo) youTubeItem).getDuration();
             if (duration != null) {
@@ -59,6 +61,8 @@ public class YouTubeItemAdapter<T extends YouTubeItem> extends ArrayAdapter<T> {
             } else {
                 textViewVideoDuration.setVisibility(View.GONE);
             }
+
+            textViewChannelTitle.setText(((YouTubeVideo) youTubeItem).getChannelTitle());
             imageView.setVisibility(View.GONE);
             textViewItemCount.setText("");
         } else {
@@ -66,6 +70,7 @@ public class YouTubeItemAdapter<T extends YouTubeItem> extends ArrayAdapter<T> {
             textViewItemCount.setText("");
             textViewVideoDuration.setVisibility(View.GONE);
             textViewVideoDuration.setText("");
+            textViewChannelTitle.setText("");
         }
 
         return convertView;

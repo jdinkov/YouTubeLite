@@ -14,6 +14,7 @@ public class YouTubeVideo implements YouTubeItem {
     private String commentCount;
     private String publishedAt;
     private String duration;
+    private String channelTitle;
 
     public String getId() {
         return Id;
@@ -109,5 +110,13 @@ public class YouTubeVideo implements YouTubeItem {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public String getChannelTitle() {
+        return channelTitle;
+    }
+
+    public void setChannelTitle(String channelTitle) {
+        this.channelTitle = channelTitle;
     }
 }
