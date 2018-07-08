@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import com.wordpress.dnvsoft.youtubelite.R;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubePlayList;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,7 @@ public class YouTubeItemAdapter<T extends YouTubeItem> extends ArrayAdapter<T> {
         YouTubeThumbnailView youTubeThumbnailView = convertView.findViewById(R.id.listViewThumbnailPlayListItems);
         ImageView imageView = convertView.findViewById(R.id.listViewImage);
         TextView textViewItemCount = convertView.findViewById(R.id.listViewPlaylistItemCount);
+        TextView textViewVideoDuration = convertView.findViewById(R.id.textViewDuration);
 
         final YouTubeItem youTubeItem = objects.get(position);
         textView.setText(youTubeItem.getName());
@@ -47,9 +49,23 @@ public class YouTubeItemAdapter<T extends YouTubeItem> extends ArrayAdapter<T> {
         if (youTubeItem instanceof YouTubePlayList) {
             imageView.setVisibility(View.VISIBLE);
             textViewItemCount.setText(youTubeItem.getItemCount());
+            textViewVideoDuration.setVisibility(View.GONE);
+            textViewVideoDuration.setText("");
+        } else if (youTubeItem instanceof YouTubeVideo) {
+            String duration = ((YouTubeVideo) youTubeItem).getDuration();
+            if (duration != null) {
+                textViewVideoDuration.setVisibility(View.VISIBLE);
+                textViewVideoDuration.setText(duration);
+            } else {
+                textViewVideoDuration.setVisibility(View.GONE);
+            }
+            imageView.setVisibility(View.GONE);
+            textViewItemCount.setText("");
         } else {
             imageView.setVisibility(View.GONE);
             textViewItemCount.setText("");
+            textViewVideoDuration.setVisibility(View.GONE);
+            textViewVideoDuration.setText("");
         }
 
         return convertView;

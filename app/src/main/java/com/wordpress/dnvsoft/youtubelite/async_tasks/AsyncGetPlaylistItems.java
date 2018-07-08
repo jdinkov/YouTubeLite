@@ -1,9 +1,11 @@
 package com.wordpress.dnvsoft.youtubelite.async_tasks;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.PlaylistItemListResponse;
+import com.wordpress.dnvsoft.youtubelite.R;
 import com.wordpress.dnvsoft.youtubelite.YoutubeInfo;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
@@ -45,6 +47,11 @@ public class AsyncGetPlaylistItems extends AsyncYoutube {
                 video.setId(response.getItems().get(i).getSnippet().getResourceId().getVideoId());
                 video.setName(response.getItems().get(i).getSnippet().getTitle());
                 video.setThumbnailURL(response.getItems().get(i).getSnippet().getThumbnails().getMedium().getUrl());
+                youTubeVideos.add(video);
+            } else {
+                video = new YouTubeVideo();
+                video.setName("This video is private.");
+                video.setThumbnailURL(Uri.parse("android.resource://com.wordpress.dnvsoft.youtubelite/" + R.mipmap.ic_private_video).toString());
                 youTubeVideos.add(video);
             }
         }

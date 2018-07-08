@@ -34,7 +34,6 @@ public class VideoActivity extends AppCompatActivity
     private YouTubePlayer youTubePlayer;
     private int videoPosition;
     private String playlistID;
-    private YouTubePlayerFragment youTubePlayerFragment;
     private String videoTitle;
     private int currentVideoTime;
     private String commentCount;
@@ -65,71 +64,75 @@ public class VideoActivity extends AppCompatActivity
             videoTitle = getIntent().getStringExtra("VIDEO_TITLE");
         }
 
-        youTubePlayerFragment =
-                (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtube_fragment);
+        YouTubePlayerFragment youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtube_fragment);
 
         TabsAdapter mSectionsPagerAdapter = new TabsAdapter(getSupportFragmentManager());
 
         ViewPager mViewPager = findViewById(R.id.videos_container_video);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        if (videoID != null) {
+            mViewPager.setAdapter(mSectionsPagerAdapter);
+        } else {
+            Toast.makeText(VideoActivity.this, R.string.video_unavailable, Toast.LENGTH_LONG).show();
+        }
+
         mViewPager.addOnPageChangeListener(onPageChangeListener);
 
         TabLayout tabLayout = findViewById(R.id.video_tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+        youTubePlayerFragment.initialize(YoutubeInfo.DEVELOPER_KEY, this);
     }
 
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean b) {
-        if (!b) {
-            youTubePlayer = player;
-            youTubePlayer.setShowFullscreenButton(false);
-            youTubePlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
+        youTubePlayer = player;
+        youTubePlayer.setShowFullscreenButton(false);
+        youTubePlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
 
-            youTubePlayer.setPlaylistEventListener(new YouTubePlayer.PlaylistEventListener() {
-                @Override
-                public void onPrevious() {
-                    videoPosition--;
-                    Intent intent = new Intent(VideoActivity.this, VideoActivity.class);
+        youTubePlayer.setPlaylistEventListener(new YouTubePlayer.PlaylistEventListener() {
+            @Override
+            public void onPrevious() {
+                videoPosition--;
+                Intent intent = new Intent(VideoActivity.this, VideoActivity.class);
 
-                    intent.putExtra("PLAYLIST_ID", playlistID);
-                    intent.putExtra("VIDEO_POSITION", videoPosition);
-                    intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
+                intent.putExtra("PLAYLIST_ID", playlistID);
+                intent.putExtra("VIDEO_POSITION", videoPosition);
+                intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
 
-                @Override
-                public void onNext() {
-                    videoPosition++;
-                    Intent intent = new Intent(VideoActivity.this, VideoActivity.class);
+            @Override
+            public void onNext() {
+                videoPosition++;
+                Intent intent = new Intent(VideoActivity.this, VideoActivity.class);
 
-                    intent.putExtra("PLAYLIST_ID", playlistID);
-                    intent.putExtra("VIDEO_POSITION", videoPosition);
-                    intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
+                intent.putExtra("PLAYLIST_ID", playlistID);
+                intent.putExtra("VIDEO_POSITION", videoPosition);
+                intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
 
-                @Override
-                public void onPlaylistEnded() {
+            @Override
+            public void onPlaylistEnded() {
 
-                }
-            });
+            }
+        });
 
-            if (isMinimized) {
-                if (videoPosition != Integer.MIN_VALUE) {
-                    youTubePlayer.cuePlaylist(playlistID, videoPosition, currentVideoTime);
-                } else {
-                    youTubePlayer.cueVideo(videoID, currentVideoTime);
-                }
+        if (isMinimized) {
+            if (videoPosition != Integer.MIN_VALUE) {
+                youTubePlayer.cuePlaylist(playlistID, videoPosition, currentVideoTime);
             } else {
-                if (videoPosition != Integer.MIN_VALUE) {
-                    youTubePlayer.loadPlaylist(playlistID, videoPosition, currentVideoTime);
-                } else {
-                    youTubePlayer.loadVideo(videoID, currentVideoTime);
-                }
+                youTubePlayer.cueVideo(videoID, currentVideoTime);
+            }
+        } else {
+            if (videoPosition != Integer.MIN_VALUE) {
+                youTubePlayer.loadPlaylist(playlistID, videoPosition, currentVideoTime);
+            } else {
+                youTubePlayer.loadVideo(videoID, currentVideoTime);
             }
         }
     }
@@ -167,22 +170,9 @@ public class VideoActivity extends AppCompatActivity
     };
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        youTubePlayerFragment.initialize(YoutubeInfo.DEVELOPER_KEY, this);
-    }
-
-    @Override
     protected void onPause() {
-        if (youTubePlayer != null) {
-            try {
-                currentVideoTime = youTubePlayer.getCurrentTimeMillis();
-                youTubePlayer.release();
-                isMinimized = true;
-            } catch (IllegalStateException exception) {
-                isMinimized = true;
-            }
-        }
+        currentVideoTime = youTubePlayer.getCurrentTimeMillis();
+        isMinimized = true;
         super.onPause();
     }
 

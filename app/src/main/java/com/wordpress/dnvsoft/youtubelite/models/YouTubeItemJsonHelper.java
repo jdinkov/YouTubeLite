@@ -36,14 +36,17 @@ public class YouTubeItemJsonHelper implements Serializable {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject item = new JSONObject(jsonArray.getString(i));
                 T youTubeItem = c.newInstance();
-                youTubeItem.setId(item.getString("id"));
+                try {
+                    youTubeItem.setId(item.getString("id"));
+                } catch (JSONException e) {
+                    youTubeItem.setId(null);
+                }
                 youTubeItem.setName(item.getString("name"));
                 youTubeItem.setThumbnailURL(item.getString("thumbnailURL"));
                 try {
                     youTubeItem.setItemCount(item.getString("itemCount"));
                 } catch (JSONException e) {
-                    arrayList.add(youTubeItem);
-                    continue;
+                    youTubeItem.setItemCount(null);
                 }
                 arrayList.add(youTubeItem);
             }

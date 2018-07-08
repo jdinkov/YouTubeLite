@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.wordpress.dnvsoft.youtubelite.adapters.YouTubeItemAdapter;
+import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetVideoDuration;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
 
 import java.util.ArrayList;
 
@@ -137,6 +140,7 @@ public abstract class YouTubeItemsFragment extends Fragment {
             if (!result.isCanceled() && result.getYouTubeVideos() != null) {
                 nextPageToken = result.getNextPageToken();
                 youTubeItems.addAll(result.getYouTubeVideos());
+                getVideoDuration();
                 adapter.notifyDataSetChanged();
             }
 
@@ -146,6 +150,40 @@ public abstract class YouTubeItemsFragment extends Fragment {
             updateViewFooter(YouTubeRequest.RECEIVED);
         }
     };
+
+    private String getVideosWithEmptyDuration() {
+        ArrayList<String> videoIds = new ArrayList<>();
+        for (YouTubeItem item : youTubeItems) {
+            if (item instanceof YouTubeVideo && ((YouTubeVideo) item).getDuration() == null) {
+                videoIds.add(item.getId());
+            }
+        }
+
+        return TextUtils.join(",", videoIds);
+    }
+
+    private void getVideoDuration() {
+        AsyncGetVideoDuration videoDuration = new AsyncGetVideoDuration(
+                getActivity(), getVideosWithEmptyDuration(),
+                new TaskCompleted() {
+                    @Override
+                    public void onTaskComplete(YouTubeResult result) {
+                        if (!result.isCanceled() && result.getYouTubeVideos() != null) {
+                            for (int i = 0; i < youTubeItems.size(); i++) {
+                                for (YouTubeVideo video : result.getYouTubeVideos()) {
+                                    if (video.getId().equals(youTubeItems.get(i).getId())) {
+                                        ((YouTubeVideo) youTubeItems.get(i)).setDuration(video.getDuration());
+                                    }
+                                }
+                            }
+
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+
+        videoDuration.execute();
+    }
 
     abstract String getContentString();
 }

@@ -13,6 +13,7 @@ public class YouTubeVideo implements YouTubeItem {
     private String dislikeCount;
     private String commentCount;
     private String publishedAt;
+    private String duration;
 
     public String getId() {
         return Id;
@@ -100,5 +101,13 @@ public class YouTubeVideo implements YouTubeItem {
 
     public void setPublishedAt(String publishedAt) {
         this.publishedAt = publishedAt;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }
