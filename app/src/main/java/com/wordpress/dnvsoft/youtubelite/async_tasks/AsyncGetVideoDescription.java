@@ -31,12 +31,13 @@ public class AsyncGetVideoDescription extends AsyncYoutube {
         YouTubeVideo youTubeVideo = new YouTubeVideo();
         YouTube.Videos.List videoList = youtube.videos().list("snippet,statistics");
         videoList.setId(videoID);
-        videoList.setFields("items(snippet(publishedAt,description),statistics(viewCount,likeCount,dislikeCount,commentCount))");
+        videoList.setFields("items(snippet(publishedAt,channelId,description),statistics(viewCount,likeCount,dislikeCount,commentCount))");
         if (accountEmail == null) {
             videoList.setKey(YoutubeInfo.DEVELOPER_KEY);
         }
 
         VideoListResponse videoListResponse = videoList.execute();
+        youTubeVideo.setChannelId(videoListResponse.getItems().get(0).getSnippet().getChannelId());
         youTubeVideo.setDescription(videoListResponse.getItems().get(0).getSnippet().getDescription());
         DateTime date = videoListResponse.getItems().get(0).getSnippet().getPublishedAt();
         Date d = new Date(date.getValue());
@@ -45,7 +46,9 @@ public class AsyncGetVideoDescription extends AsyncYoutube {
         youTubeVideo.setViewCount(videoListResponse.getItems().get(0).getStatistics().getViewCount().toString());
         youTubeVideo.setLikeCount(videoListResponse.getItems().get(0).getStatistics().getLikeCount().toString());
         youTubeVideo.setDislikeCount(videoListResponse.getItems().get(0).getStatistics().getDislikeCount().toString());
-        youTubeVideo.setCommentCount(videoListResponse.getItems().get(0).getStatistics().getCommentCount().toString());
+        if (videoListResponse.getItems().get(0).getStatistics().getCommentCount() != null) {
+            youTubeVideo.setCommentCount(videoListResponse.getItems().get(0).getStatistics().getCommentCount().toString());
+        }
 
         ArrayList<YouTubeVideo> youTubeVideoArray = new ArrayList<>(Collections.singleton(youTubeVideo));
         result.setYouTubeVideos(youTubeVideoArray);

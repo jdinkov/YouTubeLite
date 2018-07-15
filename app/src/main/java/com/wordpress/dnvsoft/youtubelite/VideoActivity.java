@@ -95,25 +95,13 @@ public class VideoActivity extends AppCompatActivity
             @Override
             public void onPrevious() {
                 videoPosition--;
-                Intent intent = new Intent(VideoActivity.this, VideoActivity.class);
-
-                intent.putExtra("PLAYLIST_ID", playlistID);
-                intent.putExtra("VIDEO_POSITION", videoPosition);
-                intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                startNewActivity();
             }
 
             @Override
             public void onNext() {
                 videoPosition++;
-                Intent intent = new Intent(VideoActivity.this, VideoActivity.class);
-
-                intent.putExtra("PLAYLIST_ID", playlistID);
-                intent.putExtra("VIDEO_POSITION", videoPosition);
-                intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                startNewActivity();
             }
 
             @Override
@@ -135,6 +123,16 @@ public class VideoActivity extends AppCompatActivity
                 youTubePlayer.loadVideo(videoID, currentVideoTime);
             }
         }
+    }
+
+    private void startNewActivity() {
+        Intent intent = new Intent(VideoActivity.this, VideoActivity.class);
+        intent.putExtra("PLAYLIST_ID", playlistID);
+        intent.putExtra("VIDEO_POSITION", videoPosition);
+        intent.putExtra("NEXT_PAGE_TOKEN", nextPageToken);
+        intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override
@@ -171,7 +169,9 @@ public class VideoActivity extends AppCompatActivity
 
     @Override
     protected void onPause() {
-        currentVideoTime = youTubePlayer.getCurrentTimeMillis();
+        if (youTubePlayer != null) {
+            currentVideoTime = youTubePlayer.getCurrentTimeMillis();
+        }
         isMinimized = true;
         super.onPause();
     }

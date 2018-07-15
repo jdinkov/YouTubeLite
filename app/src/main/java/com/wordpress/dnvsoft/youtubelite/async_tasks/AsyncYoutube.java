@@ -90,6 +90,8 @@ abstract class AsyncYoutube extends AsyncTask<Void, String, YouTubeResult> {
                 } else if (exception.getDetails().getErrors().get(0).getMessage().equals("The request uses the <code>mine</code> parameter but is not properly authorized.")) {
                     String message = "Unauthorized";
                     publishProgress(message);
+                } else if (exception.getDetails().getErrors().get(0).getMessage().equals("The video identified by the <code><a href=\"/youtube/v3/docs/commentThreads/list#videoId\">videoId</a></code> parameter has disabled comments.")) {
+                    publishProgress("Comments are disabled.");
                 } else {
                     String message = exception.getStatusMessage() + "\n" + exception.getDetails().getMessage();
                     publishProgress(message);

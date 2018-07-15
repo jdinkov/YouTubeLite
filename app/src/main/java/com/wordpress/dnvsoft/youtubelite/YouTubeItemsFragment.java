@@ -173,6 +173,7 @@ public abstract class YouTubeItemsFragment extends Fragment {
                                 for (YouTubeVideo video : result.getYouTubeVideos()) {
                                     if (video.getId().equals(youTubeItems.get(i).getId())) {
                                         ((YouTubeVideo) youTubeItems.get(i)).setDuration(video.getDuration());
+                                        ((YouTubeVideo) youTubeItems.get(i)).setChannelTitle(video.getChannelTitle());
                                     }
                                 }
                             }
