@@ -67,9 +67,9 @@ public class AsyncGetVideoDuration extends AsyncYoutube {
         if (matches.containsKey("H")) {
             int temp = Integer.valueOf(matches.get("H"));
             currentDuration += temp;
-            duration.append(currentDuration);
-            duration.append(":");
         }
+        duration.append(currentDuration);
+        duration.append(":");
         if (matches.containsKey("M")) {
             duration.append(twoDigitValue(matches.get("M")));
             duration.append(":");
@@ -82,7 +82,14 @@ public class AsyncGetVideoDuration extends AsyncYoutube {
             duration.append("00");
         }
 
-        return duration.toString();
+        String finalString = duration.toString();
+
+        if (finalString.substring(0, 3).equals("00:") ||
+                finalString.substring(0, 2).equals("0:")) {
+            finalString = finalString.substring(finalString.length() - 5, finalString.length());
+        }
+
+        return finalString;
     }
 
     private String twoDigitValue(String input) {
