@@ -1,5 +1,6 @@
 package com.wordpress.dnvsoft.youtubelite;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -208,14 +209,18 @@ public class VideoActivity extends AppCompatActivity
     @Override
     public void youtubePlayerGoBack() {
         if (youTubePlayer != null) {
-            youTubePlayer.seekRelativeMillis(-5000);
+            SharedPreferences preferences = getSharedPreferences("SEEK_DURATION", Context.MODE_PRIVATE);
+            int duration = preferences.getInt("DURATION", 5);
+            youTubePlayer.seekRelativeMillis(-duration * 1000);
         }
     }
 
     @Override
     public void youtubePlayerGoForward() {
         if (youTubePlayer != null) {
-            youTubePlayer.seekRelativeMillis(5000);
+            SharedPreferences preferences = getSharedPreferences("SEEK_DURATION", Context.MODE_PRIVATE);
+            int duration = preferences.getInt("DURATION", 5);
+            youTubePlayer.seekRelativeMillis(duration * 1000);
         }
     }
 

@@ -67,7 +67,9 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:gravity="center_vertical" />
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="3" />
 
         <TextView
             android:id="@+id/textViewChannelTitle"
@@ -76,7 +78,9 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:ellipsize="end"
             android:gravity="bottom"
+            android:maxLines="1"
             android:textSize="12sp"
             android:textStyle="italic" />
     </RelativeLayout>

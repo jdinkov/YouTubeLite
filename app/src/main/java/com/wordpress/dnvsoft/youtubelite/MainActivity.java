@@ -166,16 +166,9 @@ public class MainActivity extends AppCompatActivity
             fragment = new HomeFragment();
         } else if (id == R.id.nav_subscriptions) {
             fragment = new MySubscriptionsFragment();
+        } else if (id == R.id.nav_tools) {
+            fragment = new ToolsFragment();
         }
-//          else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
 
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();

@@ -12,27 +12,10 @@
             android:id="@+id/nav_subscriptions"
             android:icon="@drawable/ic_menu_subscriptions"
             android:title="@string/subscriptions" />
-        <!--<item-->
-        <!--android:id="@+id/nav_gallery"-->
-        <!--android:icon="@drawable/ic_menu_gallery"-->
-        <!--android:name="Gallery" />-->
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_tools"
             android:icon="@drawable/ic_menu_options"
             android:title="@string/nav_tools" />
     </group>
-
-    <!--<item android:name="Communicate">-->
-    <!--<menu>-->
-    <!--<item-->
-    <!--android:id="@+id/nav_share"-->
-    <!--android:name="Share" />-->
-    <!--&lt;!&ndash;android:icon="@drawable/ic_menu_share"&ndash;&gt;-->
-    <!--<item-->
-    <!--android:id="@+id/nav_send"-->
-    <!--android:name="Send" />-->
-    <!--&lt;!&ndash;android:icon="@drawable/ic_menu_send"&ndash;&gt;-->
-    <!--</menu>-->
-    <!--</item>-->
 
 </menu>
