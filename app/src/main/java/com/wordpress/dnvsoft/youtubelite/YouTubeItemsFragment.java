@@ -118,7 +118,7 @@ public abstract class YouTubeItemsFragment extends Fragment {
 
     void updateViewFooter(YouTubeRequest request) {
         if (youTubeItems.size() != 0) {
-            if (youTubeItems.size() % 20 == 0 && nextPageToken != null) {
+            if (nextPageToken != null) {
                 footer.setVisibility(View.VISIBLE);
                 buttonLoadMore.setText(R.string.load_more);
             } else {
@@ -162,7 +162,7 @@ public abstract class YouTubeItemsFragment extends Fragment {
         return TextUtils.join(",", videoIds);
     }
 
-    private void getVideoDuration() {
+    protected void getVideoDuration() {
         AsyncGetVideoDuration videoDuration = new AsyncGetVideoDuration(
                 getActivity(), getVideosWithEmptyDuration(),
                 new TaskCompleted() {

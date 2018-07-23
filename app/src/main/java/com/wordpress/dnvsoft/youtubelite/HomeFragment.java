@@ -204,7 +204,7 @@ public class HomeFragment extends Fragment {
             footer.setVisibility(View.GONE);
         } else if (taskStatus == TaskStatus.FINISHED) {
             if (youTubeItems.size() != 0) {
-                if (youTubeItems.size() % 20 == 0 && nextPageToken != null) {
+                if (nextPageToken != null) {
                     footer.setVisibility(View.VISIBLE);
                     buttonLoadMore.setText(R.string.load_more);
                 } else {

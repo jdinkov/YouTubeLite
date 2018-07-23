@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class AsyncGetItems extends AsyncYoutube {
 
+    private String channelId;
     private String parameter;
     private String orderBy;
     private String pageToken;
@@ -26,6 +27,12 @@ public class AsyncGetItems extends AsyncYoutube {
         this.parameter = parameter;
         this.orderBy = orderBy;
         this.pageToken = pageToken;
+    }
+
+    public AsyncGetItems(Context context, String channelId, String parameter, String orderBy,
+                         String pageToken, TaskCompleted callback) {
+        this(context, parameter, orderBy, pageToken, callback);
+        this.channelId = channelId;
     }
 
     @Override
@@ -39,6 +46,7 @@ public class AsyncGetItems extends AsyncYoutube {
         searchList.setPageToken(pageToken);
         searchList.setOrder(orderBy);
         searchList.setQ(parameter);
+        searchList.setChannelId(channelId);
         searchList.setMaxResults((long) 20);
         if (accountEmail == null) {
             searchList.setKey(YoutubeInfo.DEVELOPER_KEY);

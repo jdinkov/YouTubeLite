@@ -10,17 +10,21 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetChannelBanner;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
+import com.wordpress.dnvsoft.youtubelite.menus.SearchChannelVideosMenu;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
 public class ChannelActivity extends AppCompatActivity {
 
     private String channelId;
     private int screenX;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +62,11 @@ public class ChannelActivity extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
-            if (position != 1) {
-                getSupportFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
+            if (position != 0) {
+                menu.getItem(0).setVisible(false);
+            } else {
+                menu.getItem(0).setVisible(true);
             }
         }
 
@@ -95,16 +102,34 @@ public class ChannelActivity extends AppCompatActivity {
         getChannelBanner.execute();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.channel_videos_menu, menu);
+        this.menu = menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_search) {
+            SearchChannelVideosMenu menu = new SearchChannelVideosMenu(ChannelActivity.this, channelId);
+            menu.Show();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public class TabsAdapter extends FragmentPagerAdapter {
 
-        private ChannelFragmentVideos fragmentVideos;
+        private ChannelFragmentRootVideos fragmentVideos;
         private ChannelFragmentRootPlayLists fragmentPlayLists;
         private ChannelFragmentFeaturedChannels fragmentFeaturedChannels;
         private ChannelFragmentAbout fragmentAbout;
 
         TabsAdapter(FragmentManager fm) {
             super(fm);
-            fragmentVideos = ChannelFragmentVideos.newInstance(channelId);
+            fragmentVideos = ChannelFragmentRootVideos.newInstance(channelId);
             fragmentPlayLists = ChannelFragmentRootPlayLists.newInstance(channelId);
             fragmentFeaturedChannels = ChannelFragmentFeaturedChannels.newInstance(channelId);
             fragmentAbout = ChannelFragmentAbout.newInstance(channelId);
