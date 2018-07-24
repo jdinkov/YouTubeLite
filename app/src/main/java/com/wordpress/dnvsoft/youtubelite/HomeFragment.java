@@ -100,10 +100,21 @@ public class HomeFragment extends Fragment {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (hasChangedAtAll) {
-                getYouTubeItems(getOrderFromPreferences());
-            } else {
-                getHomeScreenVideos();
+            switch (v.getId()) {
+                case R.id.buttonFooterMain: {
+                    if (hasChangedAtAll) {
+                        getYouTubeItems(getOrderFromPreferences());
+                    } else {
+                        getHomeScreenVideos();
+                    }
+                }
+                break;
+                case R.id.searchButton: {
+                    if (hasChangedAtAll) {
+                        getYouTubeItems(getOrderFromPreferences());
+                    }
+                }
+                break;
             }
         }
     };
@@ -158,6 +169,7 @@ public class HomeFragment extends Fragment {
         public void afterTextChanged(Editable s) {
             if (!searchParameter.equals(s.toString())) {
                 hasChanged = true;
+                hasChangedAtAll = true;
                 searchParameter = s.toString();
             }
         }
@@ -227,7 +239,6 @@ public class HomeFragment extends Fragment {
             nextPageToken = null;
         }
         hasChanged = false;
-        hasChangedAtAll = true;
 
         if (homeScreenItems.getStatus() == AsyncTask.Status.RUNNING) {
             homeScreenItems.cancel(true);

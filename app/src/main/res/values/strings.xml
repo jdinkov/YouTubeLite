@@ -44,6 +44,6 @@
     <string name="doesnt_feature_any_other_channels">This channel doesn\'t feature any other channels.</string>
     <string name="subscriptions">Subscriptions</string>
     <string name="video_unavailable">This video is unavailable.</string>
-    <string name="action_search">Search</string>
+    <string name="action_search">Search in channel</string>
 
 </resources>

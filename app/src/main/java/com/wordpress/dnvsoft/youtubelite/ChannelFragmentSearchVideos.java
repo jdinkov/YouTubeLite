@@ -11,11 +11,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetItems;
+import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetPlaylistItemCount;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeChannel;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubePlayList;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
+
+import java.util.ArrayList;
 
 public class ChannelFragmentSearchVideos extends YouTubeItemsFragment {
 
@@ -75,6 +79,7 @@ public class ChannelFragmentSearchVideos extends YouTubeItemsFragment {
                             nextPageToken = result.getNextPageToken();
                             youTubeItems.addAll(result.getYouTubeItems());
                             getVideoDuration();
+                            getPlaylistItemCount();
                             adapter.notifyDataSetChanged();
                         }
 
@@ -86,6 +91,47 @@ public class ChannelFragmentSearchVideos extends YouTubeItemsFragment {
                 });
 
         getItems.execute();
+    }
+
+    private ArrayList<String> getPlaylistIds() {
+        ArrayList<String> playlistIds = new ArrayList<>();
+        for (YouTubeItem item : youTubeItems) {
+            if (item instanceof YouTubePlayList) {
+                if (item.getItemCount() == null) {
+                    playlistIds.add(item.getId());
+                }
+            }
+        }
+
+        return playlistIds;
+    }
+
+    private void getPlaylistItemCount() {
+        ArrayList<String> playlistIds = getPlaylistIds();
+        if (!playlistIds.isEmpty()) {
+            AsyncGetPlaylistItemCount itemCount = new AsyncGetPlaylistItemCount(
+                    getActivity(), playlistIds,
+                    new TaskCompleted() {
+                        @Override
+                        public void onTaskComplete(YouTubeResult result) {
+                            if (!result.isCanceled() && result.getYouTubePlayLists() != null) {
+                                for (int i = 0; i < youTubeItems.size(); i++) {
+                                    for (YouTubePlayList playList : result.getYouTubePlayLists()) {
+                                        if (youTubeItems.get(i).getId().equals(playList.getId())) {
+                                            youTubeItems.get(i).setItemCount(playList.getItemCount());
+                                            ((YouTubePlayList) youTubeItems.get(i)).setChannelTitle(playList.getChannelTitle());
+                                        }
+                                    }
+                                }
+
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+            );
+
+            itemCount.execute();
+        }
     }
 
     @Override
