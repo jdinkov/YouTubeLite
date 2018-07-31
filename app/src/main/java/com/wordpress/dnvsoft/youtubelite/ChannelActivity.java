@@ -39,6 +39,11 @@ public class ChannelActivity extends AppCompatActivity {
         editor.remove("PLAYLISTS");
         editor.apply();
 
+        editor = getSharedPreferences("CHANNEL_FRAGMENT_VIDEOS", MODE_PRIVATE).edit();
+        editor.remove("VIDEOS_PAGE_TOKEN");
+        editor.remove("VIDEOS");
+        editor.apply();
+
         setTitle(channelName);
 
         TabsAdapter mSectionsPagerAdapter = new TabsAdapter(getSupportFragmentManager());

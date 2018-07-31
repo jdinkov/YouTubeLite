@@ -58,6 +58,8 @@ public class SeekDurationMenu {
                         editor.putInt("DURATION", duration);
                         editor.apply();
 
+                        Toast.makeText(context, "Settings saved.", Toast.LENGTH_SHORT).show();
+
                         dialog.dismiss();
                     }
                 });
