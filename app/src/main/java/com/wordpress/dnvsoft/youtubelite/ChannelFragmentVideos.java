@@ -37,6 +37,7 @@ public class ChannelFragmentVideos extends YouTubeItemsFragment {
         SharedPreferences preferences = getActivity().
                 getSharedPreferences("CHANNEL_FRAGMENT_VIDEOS", Context.MODE_PRIVATE);
         nextPageToken = preferences.getString("VIDEOS_PAGE_TOKEN", null);
+        uploadsId = preferences.getString("CHANNEL_UPLOADS_ID", null);
         String tempString = preferences.getString("VIDEOS", null);
         if (tempString != null && youTubeItems.isEmpty()) {
             youTubeItems.addAll(YouTubeItemJsonHelper.fromJson(YouTubeVideo.class, tempString));
@@ -95,6 +96,7 @@ public class ChannelFragmentVideos extends YouTubeItemsFragment {
                 getSharedPreferences("CHANNEL_FRAGMENT_VIDEOS", Context.MODE_PRIVATE).edit();
         editor.putString("VIDEOS_PAGE_TOKEN", nextPageToken);
         editor.putString("VIDEOS", YouTubeItemJsonHelper.toJson(youTubeItems));
+        editor.putString("CHANNEL_UPLOADS_ID", uploadsId);
         editor.apply();
     }
 }

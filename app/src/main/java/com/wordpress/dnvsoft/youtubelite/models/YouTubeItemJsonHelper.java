@@ -19,6 +19,10 @@ public class YouTubeItemJsonHelper implements Serializable {
                 item.put("name", youTubeItems.get(i).getName());
                 item.put("thumbnailURL", youTubeItems.get(i).getThumbnailURL());
                 item.put("itemCount", youTubeItems.get(i).getItemCount());
+                if (youTubeItems.get(i) instanceof YouTubeVideo) {
+                    item.put("videoDuration", ((YouTubeVideo) youTubeItems.get(i)).getDuration());
+                    item.put("channelTitle", ((YouTubeVideo) youTubeItems.get(i)).getChannelTitle());
+                }
                 jsonArray.put(i, item);
             }
             jsonObject.put("items", jsonArray);
@@ -47,6 +51,10 @@ public class YouTubeItemJsonHelper implements Serializable {
                     youTubeItem.setItemCount(item.getString("itemCount"));
                 } catch (JSONException e) {
                     youTubeItem.setItemCount(null);
+                }
+                if (youTubeItem instanceof YouTubeVideo) {
+                    ((YouTubeVideo) youTubeItem).setDuration(item.getString("videoDuration"));
+                    ((YouTubeVideo) youTubeItem).setChannelTitle(item.getString("channelTitle"));
                 }
                 arrayList.add(youTubeItem);
             }
