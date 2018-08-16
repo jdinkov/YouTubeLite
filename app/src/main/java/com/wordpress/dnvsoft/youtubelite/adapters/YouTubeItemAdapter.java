@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.squareup.picasso.Picasso;
 import com.wordpress.dnvsoft.youtubelite.R;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItem;
@@ -38,7 +37,7 @@ public class YouTubeItemAdapter<T extends YouTubeItem> extends ArrayAdapter<T> {
         }
 
         TextView textView = convertView.findViewById(R.id.listViewTitlePlayListItems);
-        YouTubeThumbnailView youTubeThumbnailView = convertView.findViewById(R.id.listViewThumbnailPlayListItems);
+        ImageView youTubeThumbnailView = convertView.findViewById(R.id.listViewThumbnailPlayListItems);
         ImageView imageView = convertView.findViewById(R.id.listViewImage);
         TextView textViewItemCount = convertView.findViewById(R.id.listViewPlaylistItemCount);
         TextView textViewVideoDuration = convertView.findViewById(R.id.textViewDuration);

@@ -87,6 +87,7 @@ public class VideoFragmentVideos extends YouTubeItemsFragment {
         } else {
             intent.putExtra("VIDEO_ID", youTubeItems.get(position).getId());
             intent.putExtra("VIDEO_TITLE", youTubeItems.get(position).getName());
+            intent.putExtra("VIDEO_DURATION", ((YouTubeVideo) youTubeItems.get(position)).getDuration());
         }
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

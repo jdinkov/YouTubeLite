@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.squareup.picasso.Picasso;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetChannelInfo;
 import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetRating;
@@ -50,7 +50,7 @@ public class VideoFragmentDescription extends Fragment {
     private String channelId;
     private String channelTitle;
     private String channelThumbnailUrl;
-    private YouTubeThumbnailView thumbnailViewChannel;
+    private ImageView thumbnailViewChannel;
     private TextView textViewChannelTitle;
 
     interface OnVideoDescriptionResponse {

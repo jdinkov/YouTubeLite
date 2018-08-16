@@ -141,6 +141,7 @@ public class ChannelFragmentSearchVideos extends YouTubeItemsFragment {
             Intent intent = new Intent(getActivity(), VideoActivity.class);
             intent.putExtra("VIDEO_ID", youTubeItems.get(position).getId());
             intent.putExtra("VIDEO_TITLE", youTubeItems.get(position).getName());
+            intent.putExtra("VIDEO_DURATION", ((YouTubeVideo) youTubeItems.get(position)).getDuration());
             startActivity(intent);
         } else if (youTubeItems.get(position) instanceof YouTubeChannel) {
             Intent intent = new Intent(getActivity(), ChannelActivity.class);

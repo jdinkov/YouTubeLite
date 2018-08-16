@@ -38,23 +38,15 @@ public class YouTubeItemJsonHelper implements Serializable {
         try {
             JSONArray jsonArray = new JSONArray(new JSONObject(jsonString).getJSONArray("items").toString());
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject item = new JSONObject(jsonArray.getString(i));
+                JsonObjectNullableString item = new JsonObjectNullableString(jsonArray.getString(i));
                 T youTubeItem = c.newInstance();
-                try {
-                    youTubeItem.setId(item.getString("id"));
-                } catch (JSONException e) {
-                    youTubeItem.setId(null);
-                }
-                youTubeItem.setName(item.getString("name"));
-                youTubeItem.setThumbnailURL(item.getString("thumbnailURL"));
-                try {
-                    youTubeItem.setItemCount(item.getString("itemCount"));
-                } catch (JSONException e) {
-                    youTubeItem.setItemCount(null);
-                }
+                youTubeItem.setId(item.getNullableString("id"));
+                youTubeItem.setName(item.getNullableString("name"));
+                youTubeItem.setThumbnailURL(item.getNullableString("thumbnailURL"));
+                youTubeItem.setItemCount(item.getNullableString("itemCount"));
                 if (youTubeItem instanceof YouTubeVideo) {
-                    ((YouTubeVideo) youTubeItem).setDuration(item.getString("videoDuration"));
-                    ((YouTubeVideo) youTubeItem).setChannelTitle(item.getString("channelTitle"));
+                    ((YouTubeVideo) youTubeItem).setDuration(item.getNullableString("videoDuration"));
+                    ((YouTubeVideo) youTubeItem).setChannelTitle(item.getNullableString("channelTitle"));
                 }
                 arrayList.add(youTubeItem);
             }
@@ -67,5 +59,20 @@ public class YouTubeItemJsonHelper implements Serializable {
         }
 
         return arrayList;
+    }
+
+    private static class JsonObjectNullableString extends JSONObject {
+
+        JsonObjectNullableString(String json) throws JSONException {
+            super(json);
+        }
+
+        String getNullableString(String name) {
+            try {
+                return getString(name);
+            } catch (JSONException e) {
+                return null;
+            }
+        }
     }
 }

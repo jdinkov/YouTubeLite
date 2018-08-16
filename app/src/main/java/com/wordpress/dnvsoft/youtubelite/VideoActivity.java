@@ -1,9 +1,9 @@
 package com.wordpress.dnvsoft.youtubelite;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,10 +12,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerFragment;
-import com.wordpress.dnvsoft.youtubelite.menus.MissingServiceMenu;
+import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayerView;
+import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerInitListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.ui.PlayerUIController;
+import com.pierfrancescosoffritti.androidyoutubeplayer.utils.YouTubePlayerTracker;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItemJsonHelper;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
 import com.wordpress.dnvsoft.youtubelite.views.LinearLayoutWithTouchListener;
@@ -23,24 +25,22 @@ import com.wordpress.dnvsoft.youtubelite.views.LinearLayoutWithTouchListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class VideoActivity extends AppCompatActivity
-        implements YouTubePlayer.OnInitializedListener,
+public class VideoActivity extends AppCompatActivity implements
         VideoFragmentDescription.OnVideoDescriptionResponse,
         VideoFragmentComments.OnCommentCountUpdate,
         LinearLayoutWithTouchListener.OnYouTubePlayerGoBackAndForward {
 
     private String videoID;
-    private boolean isMinimized;
     private ArrayList<YouTubeVideo> items;
     private YouTubePlayer youTubePlayer;
-    private int videoPosition;
     private String playlistID;
     private String videoTitle;
-    private int currentVideoTime;
     private String commentCount;
     private String nextPageToken;
     private long lastOnBackClickedTime;
     private Toast toast;
+    private YouTubePlayerTracker youTubePlayerTracker;
+    private YouTubePlayerView youtubePlayerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,19 +53,30 @@ public class VideoActivity extends AppCompatActivity
         editor.remove("COMMENT_LIST");
         editor.apply();
 
-        videoPosition = getIntent().getIntExtra("VIDEO_POSITION", Integer.MIN_VALUE);
+        String videoDuration;
+        int videoPosition = getIntent().getIntExtra("VIDEO_POSITION", Integer.MIN_VALUE);
         if (videoPosition != Integer.MIN_VALUE) {
             items.addAll(YouTubeItemJsonHelper.fromJson(YouTubeVideo.class, getIntent().getStringExtra("ITEMS")));
             playlistID = getIntent().getStringExtra("PLAYLIST_ID");
             nextPageToken = getIntent().getStringExtra("NEXT_PAGE_TOKEN");
             videoID = items.get(videoPosition).getId();
             videoTitle = items.get(videoPosition).getName();
+            videoDuration = items.get(videoPosition).getDuration();
         } else {
             videoID = getIntent().getStringExtra("VIDEO_ID");
             videoTitle = getIntent().getStringExtra("VIDEO_TITLE");
+            videoDuration = getIntent().getStringExtra("VIDEO_DURATION");
         }
 
-        YouTubePlayerFragment youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtube_fragment);
+        youtubePlayerView = findViewById(R.id.youtube_player_view);
+        youtubePlayerView.initialize(youTubePlayerInitListener, true);
+
+        PlayerUIController controller = youtubePlayerView.getPlayerUIController();
+        controller.showFullscreenButton(false);
+        controller.showYouTubeButton(false);
+        if ("00:00".equals(videoDuration)) {
+            controller.enableLiveVideoUI(true);
+        }
 
         TabsAdapter mSectionsPagerAdapter = new TabsAdapter(getSupportFragmentManager());
 
@@ -82,74 +93,22 @@ public class VideoActivity extends AppCompatActivity
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
-        youTubePlayerFragment.initialize(YoutubeInfo.DEVELOPER_KEY, this);
     }
 
-    @Override
-    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean b) {
-        youTubePlayer = player;
-        youTubePlayer.setShowFullscreenButton(false);
-        youTubePlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
-
-        youTubePlayer.setPlaylistEventListener(new YouTubePlayer.PlaylistEventListener() {
-            @Override
-            public void onPrevious() {
-                videoPosition--;
-                startNewActivity();
-            }
-
-            @Override
-            public void onNext() {
-                videoPosition++;
-                startNewActivity();
-            }
-
-            @Override
-            public void onPlaylistEnded() {
-
-            }
-        });
-
-        if (isMinimized) {
-            if (videoPosition != Integer.MIN_VALUE) {
-                youTubePlayer.cuePlaylist(playlistID, videoPosition, currentVideoTime);
-            } else {
-                youTubePlayer.cueVideo(videoID, currentVideoTime);
-            }
-        } else {
-            if (videoPosition != Integer.MIN_VALUE) {
-                youTubePlayer.loadPlaylist(playlistID, videoPosition, currentVideoTime);
-            } else {
-                youTubePlayer.loadVideo(videoID, currentVideoTime);
-            }
+    YouTubePlayerInitListener youTubePlayerInitListener = new YouTubePlayerInitListener() {
+        @Override
+        public void onInitSuccess(@NonNull final YouTubePlayer initializedYouTubePlayer) {
+            initializedYouTubePlayer.addListener(new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady() {
+                    youTubePlayer = initializedYouTubePlayer;
+                    youTubePlayerTracker = new YouTubePlayerTracker();
+                    youTubePlayer.addListener(youTubePlayerTracker);
+                    youTubePlayer.loadVideo(videoID, 0);
+                }
+            });
         }
-    }
-
-    private void startNewActivity() {
-        Intent intent = new Intent(VideoActivity.this, VideoActivity.class);
-        intent.putExtra("PLAYLIST_ID", playlistID);
-        intent.putExtra("VIDEO_POSITION", videoPosition);
-        intent.putExtra("NEXT_PAGE_TOKEN", nextPageToken);
-        intent.putExtra("ITEMS", YouTubeItemJsonHelper.toJson(items));
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult result) {
-        if (result == YouTubeInitializationResult.SERVICE_MISSING) {
-            MissingServiceMenu serviceMenu = new MissingServiceMenu(VideoActivity.this,
-                    getString(R.string.service_missing), YoutubeInfo.YOUTUBE_PACKAGE);
-            serviceMenu.ShowDialog();
-        } else if (result == YouTubeInitializationResult.SERVICE_DISABLED) {
-            Toast.makeText(VideoActivity.this, R.string.service_disabled, Toast.LENGTH_LONG).show();
-        } else if (result == YouTubeInitializationResult.SERVICE_VERSION_UPDATE_REQUIRED) {
-            Toast.makeText(VideoActivity.this, R.string.service_version_update_required, Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(VideoActivity.this, result.toString(), Toast.LENGTH_LONG).show();
-        }
-    }
+    };
 
     ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
@@ -171,9 +130,8 @@ public class VideoActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         if (youTubePlayer != null) {
-            currentVideoTime = youTubePlayer.getCurrentTimeMillis();
+            youTubePlayer.pause();
         }
-        isMinimized = true;
         super.onPause();
     }
 
@@ -197,6 +155,12 @@ public class VideoActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onDestroy() {
+        youtubePlayerView.release();
+        super.onDestroy();
+    }
+
+    @Override
     public void setCommentCount(String commentCount) {
         this.commentCount = commentCount;
     }
@@ -211,7 +175,7 @@ public class VideoActivity extends AppCompatActivity
         if (youTubePlayer != null) {
             SharedPreferences preferences = getSharedPreferences("SEEK_DURATION", Context.MODE_PRIVATE);
             int duration = preferences.getInt("DURATION", 5);
-            youTubePlayer.seekRelativeMillis(-duration * 1000);
+            youTubePlayer.seekTo(youTubePlayerTracker.getCurrentSecond() - duration);
         }
     }
 
@@ -220,7 +184,7 @@ public class VideoActivity extends AppCompatActivity
         if (youTubePlayer != null) {
             SharedPreferences preferences = getSharedPreferences("SEEK_DURATION", Context.MODE_PRIVATE);
             int duration = preferences.getInt("DURATION", 5);
-            youTubePlayer.seekRelativeMillis(duration * 1000);
+            youTubePlayer.seekTo(youTubePlayerTracker.getCurrentSecond() + duration);
         }
     }
 

@@ -12,7 +12,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.wordpress.dnvsoft.youtubelite"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -39,6 +39,6 @@ dependencies {
     implementation 'com.google.apis:google-api-services-youtube:v3-rev192-1.23.0'
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:8.0.1'
     testImplementation 'junit:junit:4.12'
-    implementation files('libs/YouTubeAndroidPlayerApi.jar')
 }
