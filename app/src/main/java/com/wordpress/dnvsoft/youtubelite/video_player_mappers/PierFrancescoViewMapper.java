@@ -56,11 +56,15 @@ public class PierFrancescoViewMapper extends VideoPlayerMapper {
 
     @Override
     public void pause() {
-        youTubePlayer.pause();
+        if (youTubePlayer != null) {
+            youTubePlayer.pause();
+        }
     }
 
     @Override
     public void release() {
-        youtubePlayerView.release();
+        if (youtubePlayerView != null) {
+            youtubePlayerView.release();
+        }
     }
 }

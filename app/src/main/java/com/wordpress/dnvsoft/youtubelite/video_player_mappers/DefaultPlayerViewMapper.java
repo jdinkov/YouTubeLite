@@ -123,12 +123,16 @@ public class DefaultPlayerViewMapper extends VideoPlayerMapper
 
     @Override
     public void pause() {
-        currentVideoTime = youTubePlayer.getCurrentTimeMillis();
+        if (youTubePlayer != null) {
+            currentVideoTime = youTubePlayer.getCurrentTimeMillis();
+        }
         isMinimized = true;
     }
 
     @Override
     public void release() {
-        youTubePlayer.release();
+        if (youTubePlayer != null) {
+            youTubePlayer.release();
+        }
     }
 }
