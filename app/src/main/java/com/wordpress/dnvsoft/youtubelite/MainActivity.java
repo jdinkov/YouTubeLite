@@ -149,7 +149,15 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (fragment instanceof HomeFragment) {
+                super.onBackPressed();
+            } else {
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, new HomeFragment());
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                fragmentTransaction.commit();
+            }
         }
     }
 
