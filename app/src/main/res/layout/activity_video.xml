@@ -13,12 +13,29 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayerView
-            android:id="@+id/youtube_player_view"
+        <com.wordpress.dnvsoft.youtubelite.video_player_mappers.PierFrancescoPlayerView
+            android:id="@+id/pier_francesco_player_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:filterTouchesWhenObscured="false" />
+            android:filterTouchesWhenObscured="false"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/default_player_view_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <fragment
+                android:id="@+id/default_player_view"
+                android:name="com.wordpress.dnvsoft.youtubelite.video_player_mappers.DefaultPlayerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
     </com.wordpress.dnvsoft.youtubelite.views.LinearLayoutWithTouchListener>
 
     <android.support.design.widget.AppBarLayout

@@ -3,7 +3,6 @@ package com.wordpress.dnvsoft.youtubelite;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,12 +11,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayer;
-import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayerView;
-import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.AbstractYouTubePlayerListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerInitListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.ui.PlayerUIController;
-import com.pierfrancescosoffritti.androidyoutubeplayer.utils.YouTubePlayerTracker;
+import com.wordpress.dnvsoft.youtubelite.video_player_mappers.DefaultPlayerView;
+import com.wordpress.dnvsoft.youtubelite.video_player_mappers.DefaultPlayerViewMapper;
+import com.wordpress.dnvsoft.youtubelite.video_player_mappers.PierFrancescoViewMapper;
+import com.wordpress.dnvsoft.youtubelite.video_player_mappers.VideoPlayerMapper;
+import com.wordpress.dnvsoft.youtubelite.video_player_mappers.VideoPlayerView;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItemJsonHelper;
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
 import com.wordpress.dnvsoft.youtubelite.views.LinearLayoutWithTouchListener;
@@ -32,15 +30,13 @@ public class VideoActivity extends AppCompatActivity implements
 
     private String videoID;
     private ArrayList<YouTubeVideo> items;
-    private YouTubePlayer youTubePlayer;
     private String playlistID;
     private String videoTitle;
     private String commentCount;
     private String nextPageToken;
     private long lastOnBackClickedTime;
     private Toast toast;
-    private YouTubePlayerTracker youTubePlayerTracker;
-    private YouTubePlayerView youtubePlayerView;
+    private VideoPlayerMapper videoPlayerMapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +64,18 @@ public class VideoActivity extends AppCompatActivity implements
             videoDuration = getIntent().getStringExtra("VIDEO_DURATION");
         }
 
-        youtubePlayerView = findViewById(R.id.youtube_player_view);
-        youtubePlayerView.initialize(youTubePlayerInitListener, true);
-
-        PlayerUIController controller = youtubePlayerView.getPlayerUIController();
-        controller.showFullscreenButton(false);
-        controller.showYouTubeButton(false);
-        if ("00:00".equals(videoDuration)) {
-            controller.enableLiveVideoUI(true);
+        SharedPreferences preferences = getSharedPreferences("VIDEO_PLAYER_INSTANCE", MODE_PRIVATE);
+        String videoPlayerInstance = preferences.getString("PLAYER_INSTANCE", "DEFAULT_PLAYER");
+        if (videoPlayerInstance.equals("DEFAULT_PLAYER")) {
+            DefaultPlayerView youTubePlayerFragment =
+                    (DefaultPlayerView) getFragmentManager().findFragmentById(R.id.default_player_view);
+            videoPlayerMapper = new DefaultPlayerViewMapper(youTubePlayerFragment, VideoActivity.this, nextPageToken,
+                    playlistID, videoPosition, items);
+        } else if (videoPlayerInstance.equals("PIER_FRANCESCO")) {
+            VideoPlayerView youtubePlayerView = findViewById(R.id.pier_francesco_player_view);
+            videoPlayerMapper = new PierFrancescoViewMapper(youtubePlayerView, videoDuration);
         }
+        videoPlayerMapper.initialize(videoID);
 
         TabsAdapter mSectionsPagerAdapter = new TabsAdapter(getSupportFragmentManager());
 
@@ -94,21 +93,6 @@ public class VideoActivity extends AppCompatActivity implements
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
     }
-
-    YouTubePlayerInitListener youTubePlayerInitListener = new YouTubePlayerInitListener() {
-        @Override
-        public void onInitSuccess(@NonNull final YouTubePlayer initializedYouTubePlayer) {
-            initializedYouTubePlayer.addListener(new AbstractYouTubePlayerListener() {
-                @Override
-                public void onReady() {
-                    youTubePlayer = initializedYouTubePlayer;
-                    youTubePlayerTracker = new YouTubePlayerTracker();
-                    youTubePlayer.addListener(youTubePlayerTracker);
-                    youTubePlayer.loadVideo(videoID, 0);
-                }
-            });
-        }
-    };
 
     ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
@@ -129,9 +113,7 @@ public class VideoActivity extends AppCompatActivity implements
 
     @Override
     protected void onPause() {
-        if (youTubePlayer != null) {
-            youTubePlayer.pause();
-        }
+        videoPlayerMapper.pause();
         super.onPause();
     }
 
@@ -156,7 +138,7 @@ public class VideoActivity extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
-        youtubePlayerView.release();
+        videoPlayerMapper.release();
         super.onDestroy();
     }
 
@@ -172,20 +154,16 @@ public class VideoActivity extends AppCompatActivity implements
 
     @Override
     public void youtubePlayerGoBack() {
-        if (youTubePlayer != null) {
-            SharedPreferences preferences = getSharedPreferences("SEEK_DURATION", Context.MODE_PRIVATE);
-            int duration = preferences.getInt("DURATION", 5);
-            youTubePlayer.seekTo(youTubePlayerTracker.getCurrentSecond() - duration);
-        }
+        SharedPreferences preferences = getSharedPreferences("SEEK_DURATION", Context.MODE_PRIVATE);
+        int duration = preferences.getInt("DURATION", 5);
+        videoPlayerMapper.seekSeconds(-duration);
     }
 
     @Override
     public void youtubePlayerGoForward() {
-        if (youTubePlayer != null) {
-            SharedPreferences preferences = getSharedPreferences("SEEK_DURATION", Context.MODE_PRIVATE);
-            int duration = preferences.getInt("DURATION", 5);
-            youTubePlayer.seekTo(youTubePlayerTracker.getCurrentSecond() + duration);
-        }
+        SharedPreferences preferences = getSharedPreferences("SEEK_DURATION", Context.MODE_PRIVATE);
+        int duration = preferences.getInt("DURATION", 5);
+        videoPlayerMapper.seekSeconds(duration);
     }
 
     public class TabsAdapter extends FragmentPagerAdapter {

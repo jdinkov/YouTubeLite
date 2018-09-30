@@ -8,7 +8,7 @@
     <string name="search_hint">Search</string>
 
     <string name="nav_home">Home</string>
-    <string name="nav_tools">Tools</string>
+    <string name="nav_tools">Settings</string>
     <string name="activity_video_tab_description">Description</string>
     <string name="activity_video_tab_videos">Videos</string>
     <string name="activity_video_tab_comments">Comments</string>

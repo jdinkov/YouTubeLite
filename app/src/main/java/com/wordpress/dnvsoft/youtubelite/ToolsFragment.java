@@ -11,12 +11,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.wordpress.dnvsoft.youtubelite.menus.AboutMenu;
+import com.wordpress.dnvsoft.youtubelite.menus.ChooseVideoPlayerMenu;
 import com.wordpress.dnvsoft.youtubelite.menus.SeekDurationMenu;
 
 public class ToolsFragment extends Fragment {
 
     String[] aboutEntities = {
-            "Player seek duration",
+            "Choose video player",
+            "Video player seek duration",
             "About"
     };
 
@@ -41,11 +43,16 @@ public class ToolsFragment extends Fragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch (position) {
                 case 0: {
+                    ChooseVideoPlayerMenu chooseVideoPlayerMenu = new ChooseVideoPlayerMenu(getActivity());
+                    chooseVideoPlayerMenu.Show();
+                }
+                break;
+                case 1: {
                     SeekDurationMenu seekDurationMenu = new SeekDurationMenu(getActivity());
                     seekDurationMenu.Show();
                 }
                 break;
-                case 1: {
+                case 2: {
                     AboutMenu aboutMenu = new AboutMenu(getActivity());
                     aboutMenu.Show();
                 }
