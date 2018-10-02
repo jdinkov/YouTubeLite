@@ -1,6 +1,7 @@
 package com.wordpress.dnvsoft.youtubelite.async_tasks;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
 
 import com.google.api.services.youtube.YouTube;
@@ -30,9 +31,15 @@ public class AsyncGetHomeScreenItems extends AsyncYoutube {
         videoList.setFields("items(id,snippet(title,thumbnails/medium/url)),nextPageToken");
         videoList.setChart("mostPopular");
         videoList.setPageToken(pageToken);
-        TelephonyManager manager = (TelephonyManager) getAppContext().getSystemService(getAppContext().TELEPHONY_SERVICE);
-        String countryIso = manager.getSimCountryIso();
-        videoList.setRegionCode(countryIso);
+
+        SharedPreferences preferences = getAppContext().getSharedPreferences("COUNTRY_REGION_CODE", Context.MODE_PRIVATE);
+        String regionCode = preferences.getString("REGION_CODE", null);
+        if (regionCode == null){
+            TelephonyManager manager = (TelephonyManager) getAppContext().getSystemService(getAppContext().TELEPHONY_SERVICE);
+            regionCode = manager.getSimCountryIso();
+        }
+        
+        videoList.setRegionCode(regionCode);
         videoList.setMaxResults(20L);
         if (accountEmail == null) {
             videoList.setKey(YoutubeInfo.DEVELOPER_KEY);

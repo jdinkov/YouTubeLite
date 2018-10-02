@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.wordpress.dnvsoft.youtubelite.menus.AboutMenu;
+import com.wordpress.dnvsoft.youtubelite.menus.ChooseRegionCodeMenu;
 import com.wordpress.dnvsoft.youtubelite.menus.ChooseVideoPlayerMenu;
 import com.wordpress.dnvsoft.youtubelite.menus.SeekDurationMenu;
 
@@ -19,6 +20,7 @@ public class ToolsFragment extends Fragment {
     String[] aboutEntities = {
             "Choose video player",
             "Video player seek duration",
+            "Choose location",
             "About"
     };
 
@@ -53,6 +55,11 @@ public class ToolsFragment extends Fragment {
                 }
                 break;
                 case 2: {
+                    ChooseRegionCodeMenu regionCodeMenu = new ChooseRegionCodeMenu(getActivity());
+                    regionCodeMenu.Show();
+                }
+                break;
+                case 3: {
                     AboutMenu aboutMenu = new AboutMenu(getActivity());
                     aboutMenu.Show();
                 }

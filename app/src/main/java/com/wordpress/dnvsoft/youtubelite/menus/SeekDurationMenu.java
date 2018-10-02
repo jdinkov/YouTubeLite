@@ -30,7 +30,7 @@ public class SeekDurationMenu {
 
         SharedPreferences preferences = context.getSharedPreferences("SEEK_DURATION", Context.MODE_PRIVATE);
         int duration = preferences.getInt("DURATION", 5);
-        editText.setHint(String.valueOf(duration));
+        editText.setText(String.valueOf(duration));
 
         builder.setView(layout);
         builder.setPositiveButton(R.string.positive_button, null);
@@ -58,7 +58,7 @@ public class SeekDurationMenu {
                         editor.putInt("DURATION", duration);
                         editor.apply();
 
-                        Toast.makeText(context, "Settings saved.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.settings_saved, Toast.LENGTH_SHORT).show();
 
                         dialog.dismiss();
                     }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 
 import com.wordpress.dnvsoft.youtubelite.R;
 
@@ -48,6 +49,8 @@ public class ChooseVideoPlayerMenu {
                         "VIDEO_PLAYER_INSTANCE", Context.MODE_PRIVATE).edit();
                 editor.putString("PLAYER_INSTANCE", sharedPreferencesText[selection]);
                 editor.apply();
+
+                Toast.makeText(context, R.string.settings_saved, Toast.LENGTH_SHORT).show();
             }
         });
 
