@@ -44,6 +44,10 @@ public class SeekDurationMenu {
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (editText.getText().toString().equals("")) {
+                            return;
+                        }
+
                         int duration = Integer.valueOf(editText.getText().toString());
                         if (duration < 1) {
                             Toast.makeText(context, "Number must be larger than 0.", Toast.LENGTH_SHORT).show();
