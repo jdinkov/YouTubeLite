@@ -84,18 +84,17 @@ abstract class AsyncYoutube extends AsyncTask<Void, String, YouTubeResult> {
         } catch (UserRecoverableAuthIOException e) {
             startActivityForResult((Activity) getAppContext(), e.getIntent(), REQUEST_AUTHORIZATION, null);
         } catch (GoogleJsonResponseException exception) {
-            if (exception != null) {
-                if (exception.getDetails().getErrors().get(0).getMessage().equals("The requester is not allowed to access the requested subscriptions.")) {
-                    publishProgress("");
-                } else if (exception.getDetails().getErrors().get(0).getMessage().equals("The request uses the <code>mine</code> parameter but is not properly authorized.")) {
-                    String message = "Unauthorized";
-                    publishProgress(message);
-                } else if (exception.getDetails().getErrors().get(0).getMessage().equals("The video identified by the <code><a href=\"/youtube/v3/docs/commentThreads/list#videoId\">videoId</a></code> parameter has disabled comments.")) {
-                    publishProgress("Comments are disabled.");
-                } else {
-                    String message = exception.getStatusMessage() + "\n" + exception.getDetails().getMessage();
-                    publishProgress(message);
-                }
+            if (exception.getDetails().getErrors().get(0).getMessage().equals("The requester is not allowed to access the requested subscriptions.")) {
+                publishProgress("");
+            } else if (exception.getDetails().getErrors().get(0).getMessage().equals("The request uses the <code>mine</code> parameter but is not properly authorized.")) {
+                publishProgress("Unauthorized");
+            } else if (exception.getDetails().getErrors().get(0).getMessage().equals("The video identified by the <code><a href=\"/youtube/v3/docs/commentThreads/list#videoId\">videoId</a></code> parameter has disabled comments.")) {
+                publishProgress("Comments are disabled.");
+            } else if (exception.getDetails().getErrors().get(0).getMessage().equals("The <code>comment</code> resource that is being inserted must specify a value for the <code>snippet.textOriginal</code> property. Comments cannot be empty.")) {
+                publishProgress("Comments cannot be empty.");
+            } else {
+                String message = exception.getStatusMessage() + "\n" + exception.getDetails().getMessage();
+                publishProgress(message);
             }
         } catch (UnknownHostException exception) {
             String message = "No network connection available.";
