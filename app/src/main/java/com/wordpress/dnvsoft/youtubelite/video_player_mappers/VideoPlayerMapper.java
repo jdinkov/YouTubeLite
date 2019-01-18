@@ -9,4 +9,6 @@ public abstract class VideoPlayerMapper {
     public abstract void pause();
 
     public abstract void release();
+
+    public abstract void setFullscreen(boolean fullscreen);
 }

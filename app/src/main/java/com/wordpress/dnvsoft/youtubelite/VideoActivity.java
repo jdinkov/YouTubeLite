@@ -2,6 +2,7 @@ package com.wordpress.dnvsoft.youtubelite;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,13 +12,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeItemJsonHelper;
+import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
 import com.wordpress.dnvsoft.youtubelite.video_player_mappers.DefaultPlayerView;
 import com.wordpress.dnvsoft.youtubelite.video_player_mappers.DefaultPlayerViewMapper;
 import com.wordpress.dnvsoft.youtubelite.video_player_mappers.PierFrancescoViewMapper;
 import com.wordpress.dnvsoft.youtubelite.video_player_mappers.VideoPlayerMapper;
 import com.wordpress.dnvsoft.youtubelite.video_player_mappers.VideoPlayerView;
-import com.wordpress.dnvsoft.youtubelite.models.YouTubeItemJsonHelper;
-import com.wordpress.dnvsoft.youtubelite.models.YouTubeVideo;
 import com.wordpress.dnvsoft.youtubelite.views.LinearLayoutWithTouchListener;
 
 import java.util.ArrayList;
@@ -110,6 +111,16 @@ public class VideoActivity extends AppCompatActivity implements
         public void onPageScrollStateChanged(int state) {
         }
     };
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            videoPlayerMapper.setFullscreen(true);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            videoPlayerMapper.setFullscreen(false);
+        }
+    }
 
     @Override
     protected void onPause() {
