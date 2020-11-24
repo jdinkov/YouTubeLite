@@ -1,7 +1,6 @@
 package com.wordpress.dnvsoft.youtubelite;
 
 import android.content.SharedPreferences;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,16 +8,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-import com.wordpress.dnvsoft.youtubelite.async_tasks.AsyncGetChannelBanner;
-import com.wordpress.dnvsoft.youtubelite.async_tasks.TaskCompleted;
 import com.wordpress.dnvsoft.youtubelite.menus.SearchChannelVideosMenu;
-import com.wordpress.dnvsoft.youtubelite.models.YouTubeResult;
 
 public class ChannelActivity extends AppCompatActivity {
 
@@ -57,7 +50,7 @@ public class ChannelActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        GetChannelBanner();
+//        GetChannelBanner();
     }
 
     ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -80,7 +73,8 @@ public class ChannelActivity extends AppCompatActivity {
         }
     };
 
-    private void GetChannelBanner() {
+    // It's deprecated
+    /*private void GetChannelBanner() {
         AsyncGetChannelBanner getChannelBanner = new AsyncGetChannelBanner(
                 ChannelActivity.this, channelId,
                 new TaskCompleted() {
@@ -105,7 +99,7 @@ public class ChannelActivity extends AppCompatActivity {
                 });
 
         getChannelBanner.execute();
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
