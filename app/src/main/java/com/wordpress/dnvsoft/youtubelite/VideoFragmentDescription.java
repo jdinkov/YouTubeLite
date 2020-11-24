@@ -35,6 +35,7 @@ public class VideoFragmentDescription extends Fragment {
     private String videoRating = "none";
     private String likeCount;
     private String dislikeCount;
+    private TextView textViewVideoTitle;
     private TextView textViewVideoViewCount;
     private TextView textViewPublishedAt;
     private TextView textViewDescription;
@@ -90,6 +91,7 @@ public class VideoFragmentDescription extends Fragment {
 
     private void populateViews() {
         if (getView() != null) {
+            textViewVideoTitle.setText(videoTitle);
             textViewVideoViewCount.setText(videoViewCount);
             textViewPublishedAt.setText(publishedAt);
             textViewDescription.setText(description);
@@ -132,8 +134,7 @@ public class VideoFragmentDescription extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_video_description, container, false);
 
-        TextView textViewVideoTitle = fragment.findViewById(R.id.textViewDescTitle);
-        textViewVideoTitle.setText(videoTitle);
+        textViewVideoTitle = fragment.findViewById(R.id.textViewDescTitle);
 
         textViewVideoViewCount = fragment.findViewById(R.id.textViewDescViewCount);
         textViewPublishedAt = fragment.findViewById(R.id.textViewDescPublishedAt);
@@ -223,6 +224,7 @@ public class VideoFragmentDescription extends Fragment {
                             channelId = result.getYouTubeVideos().get(0).getChannelId();
                             getChannelInfo();
 
+                            videoTitle = result.getYouTubeVideos().get(0).getName();
                             publishedAt = "Published on " + result.getYouTubeVideos().get(0).getPublishedAt();
                             description = result.getYouTubeVideos().get(0).getDescription();
                             likeCount = result.getYouTubeVideos().get(0).getLikeCount();

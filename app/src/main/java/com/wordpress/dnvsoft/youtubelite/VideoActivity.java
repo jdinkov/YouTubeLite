@@ -50,7 +50,7 @@ public class VideoActivity extends AppCompatActivity implements
         editor.remove("COMMENT_LIST");
         editor.apply();
 
-        String videoDuration;
+        String videoDuration = null;
         int videoPosition = getIntent().getIntExtra("VIDEO_POSITION", Integer.MIN_VALUE);
         if (videoPosition != Integer.MIN_VALUE) {
             items.addAll(YouTubeItemJsonHelper.fromJson(YouTubeVideo.class, getIntent().getStringExtra("ITEMS")));
@@ -60,9 +60,16 @@ public class VideoActivity extends AppCompatActivity implements
             videoTitle = items.get(videoPosition).getName();
             videoDuration = items.get(videoPosition).getDuration();
         } else {
-            videoID = getIntent().getStringExtra("VIDEO_ID");
-            videoTitle = getIntent().getStringExtra("VIDEO_TITLE");
-            videoDuration = getIntent().getStringExtra("VIDEO_DURATION");
+            if (getIntent().getData() == null) {
+                videoID = getIntent().getStringExtra("VIDEO_ID");
+                videoTitle = getIntent().getStringExtra("VIDEO_TITLE");
+                videoDuration = getIntent().getStringExtra("VIDEO_DURATION");
+            } else {
+                videoID = getIntent().getData().getQuery().substring(2);
+                try {
+                    videoID = videoID.substring(0, videoID.indexOf('&'));
+                } catch (Exception ignored) {}
+            }
         }
 
         SharedPreferences preferences = getSharedPreferences("VIDEO_PLAYER_INSTANCE", MODE_PRIVATE);
@@ -124,7 +131,10 @@ public class VideoActivity extends AppCompatActivity implements
 
     @Override
     protected void onPause() {
-        videoPlayerMapper.pause();
+        try {
+            videoPlayerMapper.pause();
+        } catch (IllegalStateException ignored) {
+        }
         super.onPause();
     }
 

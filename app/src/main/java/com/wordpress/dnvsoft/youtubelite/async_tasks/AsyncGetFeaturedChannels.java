@@ -29,7 +29,7 @@ public class AsyncGetFeaturedChannels extends AsyncYoutube {
         }
 
         ChannelListResponse response = channelList.execute();
-        if (response.getItems().size() > 0) {
+        if (response.getItems().get(0).getBrandingSettings().getChannel().size() > 0) {
             YouTubeChannel youTubeChannel = new YouTubeChannel();
             youTubeChannel.setFeaturedChannelsUrls(response.getItems().get(0).getBrandingSettings().getChannel().getFeaturedChannelsUrls());
             result.setYouTubeChannel(youTubeChannel);

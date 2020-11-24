@@ -150,22 +150,26 @@ public class ChannelFragmentAbout extends Fragment {
     }
 
     private void updateTextViewAbout() {
-        TextView textViewAbout = getView().findViewById(R.id.textViewAbout);
-        if (aboutString != null) {
-            textViewAbout.setText(aboutString);
-        } else {
-            textViewAbout.setText(R.string.text_view_channel_info);
+        if (getView() != null) {
+            TextView textViewAbout = getView().findViewById(R.id.textViewAbout);
+            if (aboutString == null || aboutString.equals("")) {
+                textViewAbout.setText(R.string.text_view_channel_info);
+            } else {
+                textViewAbout.setText(aboutString);
+            }
         }
     }
 
     private void updateButtonSubscribe() {
-        Button buttonSubscribe = getView().findViewById(R.id.buttonSubscribe);
-        if (isSubscribed) {
-            buttonSubscribe.setText(R.string.subscribed);
-            buttonSubscribe.setBackgroundColor(getResources().getColor(R.color.buttonSubscribeGrey));
-        } else {
-            buttonSubscribe.setText(R.string.subscribe);
-            buttonSubscribe.setBackgroundColor(getResources().getColor(R.color.buttonSubscribeRed));
+        if (getView() != null) {
+            Button buttonSubscribe = getView().findViewById(R.id.buttonSubscribe);
+            if (isSubscribed) {
+                buttonSubscribe.setText(R.string.subscribed);
+                buttonSubscribe.setBackgroundColor(getResources().getColor(R.color.buttonSubscribeGrey));
+            } else {
+                buttonSubscribe.setText(R.string.subscribe);
+                buttonSubscribe.setBackgroundColor(getResources().getColor(R.color.buttonSubscribeRed));
+            }
         }
     }
 
