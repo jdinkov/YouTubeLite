@@ -70,10 +70,12 @@ public class PierFrancescoViewMapper extends VideoPlayerMapper {
 
     @Override
     public void setFullscreen(boolean fullscreen) {
-        if (fullscreen) {
-            youtubePlayerView.enterFullScreen();
-        } else {
-            youtubePlayerView.exitFullScreen();
+        if (youtubePlayerView != null) {
+            if (fullscreen) {
+                youtubePlayerView.enterFullScreen();
+            } else {
+                youtubePlayerView.exitFullScreen();
+            }
         }
     }
 }

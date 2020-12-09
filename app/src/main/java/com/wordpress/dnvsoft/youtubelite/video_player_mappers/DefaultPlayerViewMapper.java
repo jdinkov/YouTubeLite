@@ -138,6 +138,8 @@ public class DefaultPlayerViewMapper extends VideoPlayerMapper
 
     @Override
     public void setFullscreen(boolean fullscreen) {
-        youTubePlayer.setFullscreen(fullscreen);
+        if (youTubePlayer != null) {
+            youTubePlayer.setFullscreen(fullscreen);
+        }
     }
 }
