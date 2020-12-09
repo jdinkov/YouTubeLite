@@ -3,6 +3,7 @@ package com.wordpress.dnvsoft.youtubelite;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,8 @@ import com.wordpress.dnvsoft.youtubelite.views.LinearLayoutWithTouchListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class VideoActivity extends AppCompatActivity implements
         VideoFragmentDescription.OnVideoDescriptionResponse,
@@ -65,10 +68,13 @@ public class VideoActivity extends AppCompatActivity implements
                 videoTitle = getIntent().getStringExtra("VIDEO_TITLE");
                 videoDuration = getIntent().getStringExtra("VIDEO_DURATION");
             } else {
-                videoID = getIntent().getData().getQuery().substring(2);
-                try {
-                    videoID = videoID.substring(0, videoID.indexOf('&'));
-                } catch (Exception ignored) {}
+                Pattern pattern = Pattern.compile(".*(youtu.be/|v/|embed/|watch\\?|/|youtube.com/user/[^#]*#([^/]*?/)*)\\??v?=?(?<id>[^#&?]*).*");
+                Matcher matcher = pattern.matcher(getIntent().getData().toString());
+                if (matcher.find()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        videoID = matcher.group("id");
+                    }
+                }
             }
         }
 
