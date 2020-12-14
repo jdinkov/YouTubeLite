@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Toast;
 
 import com.wordpress.dnvsoft.youtubelite.models.YouTubeItemJsonHelper;
@@ -132,6 +133,18 @@ public class VideoActivity extends AppCompatActivity implements
             videoPlayerMapper.setFullscreen(true);
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             videoPlayerMapper.setFullscreen(false);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences preferences = getSharedPreferences("VIDEO_PLAYER_INSTANCE", MODE_PRIVATE);
+        String videoPlayerInstance = preferences.getString("PLAYER_INSTANCE", "DEFAULT_PLAYER");
+        if (videoPlayerInstance.equals("DEFAULT_PLAYER")) {
+            findViewById(R.id.default_player_view_layout).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.layout_below_player).setVisibility(View.VISIBLE);
         }
     }
 
