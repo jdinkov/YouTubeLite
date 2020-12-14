@@ -46,6 +46,9 @@ public class AsyncGetVideos extends AsyncYoutube {
             video = new YouTubeVideo();
             video.setId(searchListResponse.getItems().get(i).getId().getVideoId());
 
+            if (searchListResponse.getItems().get(i).getSnippet() == null) {
+                continue;
+            }
             video.setName(searchListResponse.getItems().get(i).getSnippet().getTitle());
             video.setThumbnailURL(searchListResponse.getItems().get(i).getSnippet().getThumbnails().getMedium().getUrl());
             youTubeVideos.add(video);
